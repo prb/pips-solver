@@ -23,21 +23,21 @@ Unit tests should be written for each of the components based on the examples in
 The fundamental idea for the data model is to treat the board as a two-dimensional grid with non-negative integer coordinates.
 
 ## Pips
-A _pips_ is an non-negativeinteger in the range `[0..6]` that represents the number of "pips" or dots on half of a domino.
+A _pips_ is a non-negative integer in the range `[0..6]` that represents the number of "pips" or dots on half of a domino.
 
 The `Pips` type should not allow the assignment of integers outside of the prescribed range.  Equality, hashing and ordering for `Pips` are inherited from the contained integer.
 
 ## Pieces / Dominoes
 A _piece_ is an ordered pair of `Pips` that represents a domino.  For the purpose of comparison, two pieces are the same if they contain the same two `Pips`.  For simplicity and because there is no risk of confusion, we will occasionally write the pieces simply as a side by side integers, e.g., `12` represents the piece `(1,2)`.
 
-To avoid confusion, we implement the Piece type by always storing the Pips in non-descending order.  For example, the piece `12` is stored as `(1,2)` and the piece `21` is stored as `(1,2)`; there is no ambiguity in storing `11` as `(1,1)`.This is intended to avoid difficulties with managing membership in collections.
+To avoid confusion, we implement the Piece type by always storing the Pips in non-descending order.  For example, the piece `12` is stored as `(1,2)` and the piece `21` is stored as `(1,2)`; there is no ambiguity in storing `11` as `(1,1)`. This is intended to avoid difficulties with managing membership in collections.
 
 A piece with the same pips for each of its positions is called a _doubleton_.  For example, `00`, `11`, `22`, `33`, `44`, `55`, and `66` are all doubletons.
 
-We define a convenience function `removeOne` that accepts a `Vec<Piece>` and a piece and returns a `Result<Vec<Piece>,Err>` new list that removes a single occurrence of the piece from the list or `None` if the piece is not found.  For example:
+We define a convenience function `removeOne` that accepts a `Vec<Piece>` and a piece and returns a `Result<Vec<Piece>,Err>` new list that removes a single occurrence of the piece from the list or an error if the piece is not found.  For example:
 ```
 removeOne([Piece(1,2),Piece(1,2)], Piece(1,2)) = Ok([Piece(1,2)])
-removeOne([Piece(3,4),Piece(5,6)], Piece(1,2)) = Err(Violation)
+removeOne([Piece(3,4),Piece(5,6)], Piece(1,2)) = Err("(1,2) was not present in the list of pieces.")
 ```
 
 ## Points
@@ -60,9 +60,9 @@ A _constraint_ defines legal assignments as part of a game.  A constraint has a 
 
 - For an `AllSame` constraint, there is an optional pips that represents the target pips that must be assigned to any point in the constraint.  We notate an `AllSame` constraint as `AllSame(Option<Pips>,HashSet<Point>)`.  The constraint only makes sense if the set of points is non-empty.
 - For an `AllDifferent` constraint, there is a possibly empty set of pips that are not allowed to be assigned to any point in the constraint.  We notate an `AllDifferent` constraint as `AllDifferent(HashSet<Pips>,HashSet<Point>)`.  The set of pips must not contain all possible pips.  The constraint only makes sense if the set of points is non-empty.
-- For a `LessThan`, `Exactly`, or `MoreThan` constraint, the intention is that the sum of all pips assigned to points in the constraint meets the comparison of the type name applied to a target non-positive integer value.  We notate the constraint as `<type>(NonNegativeInteger,HashSet<Point>)`.  Note that the sum of all pips might exceed the range of possible pips, so we use a non-negative integer rather than a `Pips` for this purpose.
+- For a `LessThan`, `Exactly`, or `MoreThan` constraint, the intention is that the sum of all pips assigned to points in the constraint meets the comparison of the type name applied to a target non-negative integer value.  We notate the constraint as `<type>(NonNegativeInteger,HashSet<Point>)`.  Note that the sum of all pips might exceed the range of possible pips, so we use a non-negative integer rather than a `Pips` for this purpose.
 
-As a notational convenience, we use the special singleton constraint `EMPTY` to represent a constraint with no points.
+As a notational convenience, we use the special singleton constraint `EMPTY_CONSTRAINT` to represent a constraint with no points.
 
 For the purpose of comparison, two constraints are equal if they are of the same type and have the same components.  (Note that the invariants above ensure that there are no equivalent constraints of different types or different components, although this has no bearing on the behavior of the solver.)
 
@@ -105,18 +105,18 @@ In the following definition, we elide the difference between a pips and the valu
 
 ```
 // Empty constraint reduces to itself.
-reduceA(EMPTY,_) = Ok(EMPTY)
+reduceA(EMPTY_CONSTRAINT,_) = Ok(EMPTY_CONSTRAINT)
 
 // No change if the point is outside the constraint
 reduceA(c,a) = Ok(c), if a.point is not in c.points
 
 // all_different
-reduceA(AllDifferent(V,P),a) = Err(Violation), if a.pips in V
+reduceA(AllDifferent(V,P),a) = Err("The pip {} is already used.", a.pips), if a.pips in V
 reduceA(AllDifferent(V,P),a) = Ok(AllDifferent(V+{a.pips},P-{a.point})), if a.pips not in V and size(P) > 1
 reduceA(AllDifferent(V,P),a) = Ok(EMPTY_CONSTRAINT), if a.pips not in V and size(P) == 1
 
 // all_same
-reduceA(AllSame(Some(v1),P),a) = Err(Violation), if a.pips != v1
+reduceA(AllSame(Some(v1),P),a) = Err("The pip {} is not the same as the expected pip {}.", a.pips, v1), if a.pips != v1
 reduceA(AllSame(None,P),a) = Ok(AllSame(Some(a.pips),P-{a.point})), if size(P) > 2
 reduceA(AllSame(None,P),_) = Ok(EMPTY_CONSTRAINT), if size(P) == 1
 reduceA(AllSame(None,P),a) = Ok(Exactly(a.pips,P-{a.point})), if size(P) == 2
@@ -125,22 +125,23 @@ reduceA(AllSame(Some(v1),P),a) = Ok(Exactly(v1,P-{a.point})), if a.pips == v1 an
 reduceA(AllSame(Some(v1),P),a) = Ok(EMPTY_CONSTRAINT), if a.pips == v1 and size(P) == 1
 
 // exactly
-reduceA(Exactly(v1,P),a) = Err(Violation), if P.points.size() == 1 and a.pips != v1
+reduceA(Exactly(v1,P),a) = Err("The pips {} is not the same as the expected pip {}.", a.pips, v1), if P.points.size() == 1 and a.pips != v1
 reduceA(Exactly(v1,P),a) = Ok(EMPTY_CONSTRAINT), if P.points.size() == 1 and a.pips == v1
-reduceA(Exactly(v1,P),a) = Err(Violation), if a.pips > v1 and size(P) > 1
-reduceA(Exactly(v1,P),a) = Ok(Exactly(v1-a.pips,P-{a.point})), if a.pips <= v1 and size(P) > 1
+reduceA(Exactly(v1,P),a) = Err("The pip {} exceeds the expected exact sum {}.", a.pips, v1), if a.pips > v1 and size(P) > 1
+reduceA(Exactly(v1,P),a) = Err("The remaining sum {} is unachievable with {} points.", v1-a.pips, size(P-{a.point})), if a.pips <= v1 and size(P) > 1 and (v1-a.pips) > 6*size(P-{a.point})
+reduceA(Exactly(v1,P),a) = Ok(Exactly(v1-a.pips,P-{a.point})), if a.pips <= v1 and size(P) > 1 and (v1-a.pips) <= 6*size(P-{a.point})
 
 // less_than
-reduceA(LessThan(v1,P),a) = Err(Violation), if a.pips >= v1
+reduceA(LessThan(v1,P),a) = Err("The pips {} is not less than the target sum {}.", a.pips, v1), if a.pips >= v1
 reduceA(LessThan(v1,P),a) = Ok(EMPTY_CONSTRAINT), if a.pips < v1 and size(P) == 1
-reduceA(LessThan(v1,P),a) = Ok(Exactly(0,P-{a.point})) if (v1-a.pips)== 1 and size(P) == 2
-reduceA(LessThan(v1,P),a) = Ok(LessThan(v1-a.pips,P-{a.point})), if a.pips < v1 and size(P) > 2
+reduceA(LessThan(v1,P),a) = Ok(Exactly(0,P-{a.point})), if (v1-a.pips) == 1 and size(P) == 2
+reduceA(LessThan(v1,P),a) = Ok(LessThan(v1-a.pips,P-{a.point})), if a.pips < v1 and size(P) >= 2
 
 // more_than
-reduceA(MoreThan(v1,P),a) = Err(Violation), if a.pips <= v1 and size(P) == 1
-reduceA(MoreThan(v1,P),a) = Ok(EMPTY), if a.pips > v1 and size(P) == 1
+reduceA(MoreThan(v1,P),a) = Err("The pips {} is less than the minimum required sum of {}.", a.pips, v1+1), if a.pips <= v1 and size(P) == 1
+reduceA(MoreThan(v1,P),a) = Ok(EMPTY_CONSTRAINT), if a.pips > v1 and size(P) == 1
 reduceA(MoreThan(v1,P),a) = Ok(Exactly(6,P-{a.point})), if (v1-a.pips) == 5 and size(P) == 2
-reduceA(MoreThan(v1,P),a) = Ok(MoreThan(v1-a.pips,P-{a.point})), if a.pips > v1 and size(P) > 1
+reduceA(MoreThan(v1,P),a) = Ok(MoreThan(v1-a.pips,P-{a.point})), if a.pips > v1 and size(P) >= 2
 ```
 
 ## Game
@@ -159,6 +160,8 @@ A _placement_ is a piece together with a point and a direction:
 Placement(Piece,Point,Direction)
 ```
 
+A placement `p` has accessors `p.piece`, `p.point`, and `p.direction` for its components.
+
 We define a function `assignments` that accepts a placement as argument and returns a list of assignments, as follows:
 
 ```
@@ -173,10 +176,10 @@ Note that there is no difference between the `North` and `South` or `East` and `
 We define a function `points` method that returns the set of points from the assignments of a placement.  For example:
 
 ```
-Placement(Piece(0,1), (0,0), North).points() = {(0,1), (0,2)}
+Placement(Piece(0,1), (0,0), North).points() = {(0,0), (0,1)}
 ```
 
-For a board `b`, a placement `p` is _legal_ if `p.points() < b.points` (where `<` is the subset operator).
+For a board `b`, a placement `p` is _legal_ if `p.points()` is a subset of `b.points()`.
 
 ### Placements and Constraints
 For constraint `c` and a placement `p`, we define `reduceP(c,p)` as `reduceA` folded over `assignments(p)`.  We say that `p` _satisfies_ `c` if `reduce_P(c,p)` is `Ok`.
@@ -197,7 +200,7 @@ reduceP(
       Some(Exactly(0,{(0,0)}))
       , Assignment(1,(0,0))
     )
-= Err(Violation)
+= Err("The pip 1 is not the same as the expected pip 0.")
 ```
 
 Because the assignment of `1` to `(0,0)` would violate the derived constraint that `(0,0)` must be assigned `0`.
@@ -208,7 +211,7 @@ We define a convenience function `reduceCs` that a set of constraints `cs` and a
 let
   out = apply reduceP(_,p) to each member of cs and filter to remove any instances of EMPTY_CONSTRAINT
 
-reduceCs(cs,p) = Err(Violation), if out contains None
+reduceCs(cs,p) = Err("At least one constraint was violated by the placement."), if out contains None
 reduceCs(cs,p) = Ok(out), otherwise
 ```
 
@@ -218,8 +221,8 @@ In the context of a board along with a set of constraints, a placement is _valid
 We define a function `reduceB` that accepts a board `p` and a placement as arguments and returns a new board:
 
 ```
-reduceB(b,p) = Ok(Board(P-p.points)), if p.points() < b.points
-reduceB(b,p) = Err(Violation), otherwise
+reduceB(b,p) = Ok(Board(b.points - p.points)), if p.points() is a subset of b.points
+reduceB(b,p) = Err("Placement {} has at least one point outside of the board.", p), otherwise
 ```
 
 ### Placements and Games
@@ -229,12 +232,12 @@ We define a function `play` that accepts a game and a placement as arguments and
 play(Game(B,P,Cs),p) =
   let
     newB = reduceB(B,p)
-    newPs = removeOne(P,p)
+    newPs = removeOne(P,p.piece)
     newCs = reduceCs(Cs,p)
 
   return
     Ok(Game(newB.unwrap(),newPs.unwrap(),newCs.unwrap())), if newB.is_some() && newPs.is_some() && newCs.is_some()
-    Err(Violation), otherwise
+    Err("Unwinnable game."), otherwise
 ```
 
 ### Legal and Illegal Placement Examples
@@ -269,7 +272,7 @@ The recursive step accepts a `g=Game(b, pp, c)` and `play_out=Vec<Placement>` as
 - If not, identify the upper-most, left-most point in the board `b`, call it `b0`.
 - We now try placing the pieces in different directions, as follows.
   - We compute a set `unique_pieces` that contains the unique pieces in `pp`.
-  - For each piece `p` in `unique_pieces`, we use the `play` function to try to place the piece in each of the four directions (omitting `South` and `West` for doubletons) at the point `b0`.  For example, for the `North` direction, we call `play(g,q)` where `q=Placement(p,b0,North)`.  If the call returns `Ok(g2)`, invoke the recursive step with `g2` and `play_out ++ q`.  If the call returns `Err`, continue to the next direction, if any, or to the next piece in `unique_pieces`, if any.  If we've tried all directions and all of the pieces without success, return `Err(Violation)`.
+  - For each piece `p` in `unique_pieces`, we use the `play` function to try to place the piece in each of the four directions (omitting `South` and `West` for doubletons) at the point `b0`.  For example, for the `North` direction, we call `play(g,q)` where `q=Placement(p,b0,North)`.  If the call returns `Ok(g2)`, invoke the recursive step with `g2` and `play_out ++ q`.  If the call returns `Err`, continue to the next direction, if any, or to the next piece in `unique_pieces`, if any.  If we've tried all directions and all of the pieces without success, return `Err("No valid placements.")`.
 
 # Textual Input
 
