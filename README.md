@@ -1,7 +1,7 @@
 # Pips Solver
 Human-specified, AI-implemented  solver for the NY Times Pips game.  The specification is in [strategy.md](strategy.md).  The AI used was this initial pass was Gemini 2.5 Pro at a cost of around $10 plus a few hours of human time to write the specification and a few more hours of human time to interact with the AI; net net, it was certainly faster than writing it on my own.  I used the [Zed](https://zed.dev) editor for authoring and to work with the AI.
 
-There are a number of examples (in [examples/](examples) pulled from the NYTimes, and running them looks something like this:
+There are a number of examples (in [examples/](examples)) pulled from the NYTimes, and running them looks something like this:
 
 ```
 > cargo run --release -- examples/hard_2025-10-14_puzzle.txt 
