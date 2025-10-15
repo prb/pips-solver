@@ -1,0 +1,17 @@
+// NYTimes Medium 2025-10-14
+board:
+###
+# #
+###
+# #
+# #
+
+pieces:
+25,31,50,30,45,40
+
+constraints:
+Exactly 5 {(0,0),(1,0)}
+Exactly 9 {(2,0),(2,1)}
+Exactly 9 {(0,2),(0,3)}
+AllSame None {(1,2),(2,2),(2,3)}
+MoreThan 3 {(0,4)}

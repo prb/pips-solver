@@ -1,0 +1,11 @@
+// Solvable 2x2 puzzle with two single exactly constraints
+board:
+##
+##
+
+pieces:
+01,23
+
+constraints:
+Exactly 2 {(0,0)}
+Exactly 0 {(1,1)}

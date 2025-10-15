@@ -1,0 +1,7 @@
+Placements:
+  - Piece (0, 3) at (0, 0) -> North
+  - Piece (0, 4) at (0, 2) -> West
+  - Piece (3, 5) at (0, 3) -> South
+  - Piece (0, 2) at (2, 2) -> East
+  - Piece (1, 1) at (3, 0) -> South
+  - Piece (2, 2) at (3, 3) -> South

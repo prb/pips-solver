@@ -1,0 +1,8 @@
+// Unsolvable 1x1 puzzle
+board:
+#
+
+pieces:
+01
+
+constraints:

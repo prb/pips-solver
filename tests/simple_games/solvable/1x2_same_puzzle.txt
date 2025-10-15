@@ -1,0 +1,10 @@
+// Solvable 1x2 puzzle with an AllSame constraint
+board:
+#
+#
+
+pieces:
+00
+
+constraints:
+AllSame None {(0,0),(0,1)}

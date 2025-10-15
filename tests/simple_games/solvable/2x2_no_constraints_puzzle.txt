@@ -1,0 +1,9 @@
+// Solvable 2x2 puzzle
+board:
+##
+##
+
+pieces:
+00,11
+
+constraints:

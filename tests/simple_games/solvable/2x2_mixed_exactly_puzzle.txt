@@ -1,0 +1,11 @@
+// Solvable 2x2 puzzle with a couple of Exactly constraints
+board:
+##
+##
+
+pieces:
+01,03
+
+constraints:
+Exactly 0 {(0,0),(1,0)}
+Exactly 4 {(0,1),(1,1)}

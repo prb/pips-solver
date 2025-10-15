@@ -1,0 +1,13 @@
+// Solvable 4x4 puzzle with a couple of inequality constraints
+board:
+####
+####
+####
+####
+
+pieces:
+01,04,44,55,44,55,66,66
+
+constraints:
+LessThan 1 {(1,1),(2,1)}
+MoreThan 5 {(1,2),(2,2)}

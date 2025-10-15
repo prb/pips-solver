@@ -1,0 +1,9 @@
+// Solvable 2x1 puzzle with an AllDifferent constraint
+board:
+##
+
+pieces:
+01
+
+constraints:
+AllDifferent {} {(0,0),(1,0)}

@@ -1,0 +1,10 @@
+// Solvable 1x2 puzzle with an AllDifferent constraint
+board:
+#
+#
+
+pieces:
+01
+
+constraints:
+AllDifferent {} {(0,0),(0,1)}

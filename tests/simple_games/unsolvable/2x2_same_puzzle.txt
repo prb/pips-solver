@@ -1,0 +1,10 @@
+// Solvable 2x2 puzzle with a big AllSame constraint
+board:
+##
+##
+
+pieces:
+00,01
+
+constraints:
+AllSame None {(0,0),(1,0),(0,1),(1,1)}
