@@ -4,7 +4,7 @@ This project is an initial exploration of Rust programming in the form of a solv
 - [Pips Game Launch Post](https://www.nytimes.com/2025/08/31/briefing/pips-new-york-times-games.html)
 - [Rust Programming Language](https://www.rust-lang.org/)
 
-The game involves placing a list of dominoes onto a pre-defined game board in a non-overlapping way that satisfies a set of color-coded constraints, covers the entire board, and places all of the dominoes.  The colors are purely decoration.
+The game involves placing a list of dominos onto a pre-defined game board in a non-overlapping way that satisfies a set of color-coded constraints, covers the entire board, and places all of the dominos.  (The colors are purely decoration.)
 
 # Project Goals
 
