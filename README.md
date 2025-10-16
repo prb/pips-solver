@@ -1,5 +1,20 @@
 # Pips Solver
-Human-specified, AI-implemented  solver for the NY Times Pips game.  The specification is in [strategy.md](strategy.md), and I'm experimenting with different AI models.  I used the [Zed](https://zed.dev) editor for authoring.
+Human-specified, AI-implemented solver for the NY Times Pips game.  The specification is in [strategy.md](strategy.md), and I'm experimenting with different AI models and what it's like to work with them.  I used the [Zed](https://zed.dev) editor for authoring.
+
+My favorite puzzle is 2025-10-15 "hard":
+
+```
+411
+4 3  6
+551  0
+4    0
+2    0
+ 520
+ 4 1  20
+ 630  2
+ 6    3
+ 2   33
+```
 
 ## Gemini 2.5 Pro
 I used Gemini 2.5 Pro (at a cost of around $10 plus a few hours of human time) to refine the specification and a few more hours of human time to interact with the AI to build a working solver; net net, it was certainly faster than writing it on my own.
@@ -14,6 +29,8 @@ Interestingly, the solver was 4-5x as fast as the Gemini solver once it identifi
 ## Codex 5
 I used GPT Codex 5 (at the cost of around 500k total tokens) for another pass, and it also did a great job, including finding some subtle and unsubtle issues with the specification that both Claude and Gemini had missed.  Interestingly, when I asked it to critique the other two implementations, it complained that they correctly implemented the specification in a way that Codex had missed!  (Codex admitted the error once prompted.)  Codex produced well-tested code in the format and style that I requested.  The Codex solver is about twice as fast as the Gemini solver (and thus half as fast as the Claude solver).
 
+Developed last, the Codex solver is the most feature complete and correct.
+
 I did get Codex to add a simple post-solution board display function, e.g.:
 
 ```
@@ -25,6 +42,11 @@ Board:
    11  00
    11  21
 ```
+
+And I got Codex to write a converter from the NYTimes JSON format to the textual format used in this project.
+
+## Acknowledgments / References
+Discovering and reviewing the code for another Pips solving project,[pips](https://github.com/ematth/pips), I discovered that a JSON representation of the games is downloadable from the NY Times API; this helped to bulk up the set of examples.  The 2025-09-15 "hard" game is the most interesting because of the large `Exactly` constraint.
 
 ## Future
 Things that I might tinker with further could include parallelization with Rayon or similar, trying out AlgorithmX/Dancing Links, prettier output, and accepting a screenshot of a game as input.
