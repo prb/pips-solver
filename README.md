@@ -7,12 +7,24 @@ I used Gemini 2.5 Pro (at a cost of around $10 plus a few hours of human time) t
 If you read the specification and then look at the source code, it will become obvious that a some of specification was ignored (e.g., putting the code into separate modules, idiomatic functional style, etc.) as well as defining (and using) incremental unit tests.  Nonetheless, it produced a working solver.
 
 ## Claude Sonnet 4.5 + Code
-I used Claude Sonnet 4.5 via the Claude Code CLI (at the cost of around 8% of a week's usage limit for a Pro plan) for another pass, and it did a superlative job.  It found both subtle and unsubtle issues in the specification, and it produced code in the format and style that I requested.
+I used Claude Sonnet 4.5 via the Claude Code CLI (at the cost of around 8% of a week's usage limit for a Pro plan) for another pass, and it did a superlative job.  It found both subtle and unsubtle issues in the specification, and it produced well-tested code in the format and style that I requested.
 
-Interestingly, the solver was around the same speed as the Gemini 2.5 Pro version.
+Interestingly, the solver was 4-5x as fast as the Gemini solver once it identified (and implemented) a performance optimization by reading the Gemini code.
 
 ## Codex 5
-Coming soon!
+I used GPT Codex 5 (at the cost of around 500k total tokens) for another pass, and it also did a great job, including finding some subtle and unsubtle issues with the specification that both Claude and Gemini had missed.  Interestingly, when I asked it to critique the other two implementations, it complained that they correctly implemented the specification in a way that Codex had missed!  (Codex admitted the error once prompted.)  Codex produced well-tested code in the format and style that I requested.  The Codex solver is about twice as fast as the Gemini solver (and thus half as fast as the Claude solver).
+
+I did get Codex to add a simple post-solution board display function, e.g.:
+
+```
+Board:
+  44
+ 3366526
+ 6 454243
+66 255200
+   11  00
+   11  21
+```
 
 ## Future
 Things that I might tinker with further could include parallelization with Rayon or similar, trying out AlgorithmX/Dancing Links, prettier output, and accepting a screenshot of a game as input.

@@ -213,6 +213,8 @@ let
 
 reduceCs(cs,p) = Err("At least one constraint was violated by the placement."), if out contains None
 reduceCs(cs,p) = Ok(out), otherwise
+
+Both `reduceCs` and `play` (defined below) intentionally collapse underlying failures into these high-level error strings; rely on targeted unit tests for finer-grained diagnostics.
 ```
 
 ### Placements and Boards
@@ -249,7 +251,7 @@ b = Board({(0,0),(0,1),(0,2),(1,2)})
 
 The placement `Placement((4,4),(0,0),North)` is legal, as is `Placement((3,2),(0,2),East)`.
 
-The placement `Placement((3,3),(0,1),North)` is illegal because the set of points in the board that would result from removing the points in the placement is `{(0,0),(1,2)}`, which is invalid.
+The placement `Placement((3,3),(0,1),North)` produces the reduced board `{(0,0),(1,2)}`. The solver does not reject this board shape immediately; instead, the subsequent recursive search will discover that no valid placements remain.
 
 ### Valid and Invalid Placement Examples
 Consider the same board as above together with the set of constraints:
