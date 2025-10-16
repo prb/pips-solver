@@ -90,8 +90,6 @@ For an `AllSame` constraint, the set of values must be size at least `2`.
 ### LessThan Invariants
 For a `LessThan` constraint, the target sum must not be less than the value of the least pips, i.e., `0`.  For example, the constraint `LessThan(0,_)` is not permitted.
 
-For a `LessThan` constraint, the target sum must also be strictly less than the largest Pips (i.e., `6`) multiplied by the number of points in the constraint.  For example, the constraint `LessThan(18,_)` is not permitted for a constraint with `3` points.
-
 ### Exactly Invariants
 For an `Exactly` constraint, the target sum must not be larger than the number of points in the constraint multiplied by the value of the largest possible pips, i.e., `6`.  For example, the constraint `Exactly(19,_)` is not permitted for a constraint with `3` points.  The constraint `Exactly(0,_)` would permitted for a constraint with `3` points.
 
