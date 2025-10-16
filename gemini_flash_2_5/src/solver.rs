@@ -4,15 +4,38 @@ use crate::model::game::Game;
 use crate::model::piece::{self, Piece};
 use crate::model::placement::Placement;
 use std::collections::HashSet;
+use std::rc::Rc;
+
+// A persistent, singly-linked list of placements.
+// Rc allows us to share the tail of the list between paths.
+enum Path {
+    Empty,
+    Node(Placement, Rc<Path>),
+}
+
+impl Path {
+    // Helper function to convert the path back to a Vec when a solution is found.
+    pub fn to_vec(&self) -> Vec<Placement> {
+        let mut vec = Vec::new();
+        let mut current = self;
+        while let Path::Node(placement, next) = current {
+            vec.push(*placement);
+            current = next;
+        }
+        vec.reverse(); // The list is built backwards, so we reverse it at the end.
+        vec
+    }
+}
 
 pub fn solve(game: &Game) -> Result<Vec<Placement>, String> {
-    solve_recursive(game, Vec::new())
+    let initial_path = Rc::new(Path::Empty);
+    solve_recursive(game, initial_path).map(|path| path.to_vec())
 }
 
 use crate::model::direction::Direction;
-fn solve_recursive(game: &Game, placements: Vec<Placement>) -> Result<Vec<Placement>, String> {
+fn solve_recursive(game: &Game, path: Rc<Path>) -> Result<Rc<Path>, String> {
     if game.is_won() {
-        return Ok(placements);
+        return Ok(path);
     }
 
     let b0 = match game.board.points().iter().min() {
@@ -42,9 +65,8 @@ fn solve_recursive(game: &Game, placements: Vec<Placement>) -> Result<Vec<Placem
             };
 
             if let Ok(new_game) = play(game, &placement) {
-                let mut new_placements = placements.clone();
-                new_placements.push(placement);
-                if let Ok(solution) = solve_recursive(&new_game, new_placements) {
+                let new_path = Rc::new(Path::Node(placement, Rc::clone(&path)));
+                if let Ok(solution) = solve_recursive(&new_game, new_path) {
                     return Ok(solution);
                 }
             }
