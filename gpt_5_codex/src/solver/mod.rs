@@ -1,30 +1,30 @@
 use crate::model::{Direction, Game, Piece, Placement, reduce_constraints, remove_one};
+use std::rc::Rc;
 
 pub fn solve(game: &Game) -> Result<Vec<Placement>, String> {
-    let mut path = Vec::new();
-    backtrack(game.clone(), &mut path)
+    let seed = Rc::new(Path::Empty);
+    backtrack(game, seed).map(|path| path_to_vec(&path))
 }
 
-fn backtrack(game: Game, path: &mut Vec<Placement>) -> Result<Vec<Placement>, String> {
+fn backtrack(game: &Game, path: Rc<Path>) -> Result<Rc<Path>, String> {
     if game.is_won() {
-        return Ok(path.clone());
+        return Ok(path);
     }
-    let pivot = match game.top_left_point() {
-        Some(point) => point,
-        None => return Err("No valid placements.".to_string()),
-    };
+    let pivot = game
+        .top_left_point()
+        .ok_or_else(|| "No valid placements.".to_string())?;
     let unique_pieces = game.unique_pieces();
     for piece in unique_pieces {
-        for direction in directions_for_piece(&piece) {
+        for &direction in directions_for_piece(&piece) {
             let placement = Placement::new(piece.clone(), pivot, direction);
-            match play(&game, &placement) {
+            match play(game, &placement) {
                 Ok(next) => {
-                    path.push(placement.clone());
-                    match backtrack(next, path) {
-                        Ok(solution) => return Ok(solution),
-                        Err(_) => {
-                            path.pop();
-                        }
+                    let next_path = Rc::new(Path::Node {
+                        placement,
+                        prev: Rc::clone(&path),
+                    });
+                    if let Ok(solution) = backtrack(&next, next_path) {
+                        return Ok(solution);
                     }
                 }
                 Err(_) => continue,
@@ -45,17 +45,40 @@ fn play(game: &Game, placement: &Placement) -> Result<Game, String> {
     }
 }
 
-fn directions_for_piece(piece: &Piece) -> Vec<Direction> {
+fn directions_for_piece(piece: &Piece) -> &'static [Direction] {
     if piece.is_doubleton() {
-        vec![Direction::North, Direction::East]
+        &DOUBLETON_DIRECTIONS
     } else {
-        vec![
-            Direction::North,
-            Direction::East,
-            Direction::South,
-            Direction::West,
-        ]
+        &ALL_DIRECTIONS
     }
+}
+
+const ALL_DIRECTIONS: [Direction; 4] = [
+    Direction::North,
+    Direction::East,
+    Direction::South,
+    Direction::West,
+];
+
+const DOUBLETON_DIRECTIONS: [Direction; 2] = [Direction::North, Direction::East];
+
+enum Path {
+    Empty,
+    Node {
+        placement: Placement,
+        prev: Rc<Path>,
+    },
+}
+
+fn path_to_vec(path: &Path) -> Vec<Placement> {
+    let mut current = path;
+    let mut placements = Vec::new();
+    while let Path::Node { placement, prev } = current {
+        placements.push(placement.clone());
+        current = prev;
+    }
+    placements.reverse();
+    placements
 }
 
 #[cfg(test)]
