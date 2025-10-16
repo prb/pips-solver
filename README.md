@@ -17,9 +17,9 @@ My favorite puzzle is 2025-10-15 "hard":
 ```
 
 ## Gemini 2.5 Pro
-I used Gemini 2.5 Pro (at a cost of around $10 plus a few hours of human time) to refine the specification and a few more hours of human time to interact with the AI to build a working solver; net net, it was certainly faster than writing it on my own.
+I used Gemini 2.5 Pro to make a first pass from within the Zed editor, interacting with the AI to build a working solver; net net, it was certainly faster than writing it on my own.  After making passes with Claude and Codex, I used Gemini 2.5 Pro again (but from the CLI this time) for a second pass after the refinements to the specification obtained through the interaction with the other models.
 
-If you read the specification and then look at the source code, it will become obvious that a some of specification was ignored (e.g., putting the code into separate modules, idiomatic functional style, etc.) as well as defining (and using) incremental unit tests.  Nonetheless, it produced a working solver.
+For the first pass, Gemini didn't do a great job following the instructions in the specificaiton,
 
 ## Claude Sonnet 4.5 + Code
 I used Claude Sonnet 4.5 via the Claude Code CLI (at the cost of around 8% of a week's usage limit for a Pro plan) for another pass, and it did a superlative job.  It found both subtle and unsubtle issues in the specification, and it produced well-tested code in the format and style that I requested.
@@ -44,6 +44,9 @@ Board:
 ```
 
 And I got Codex to write a converter from the NYTimes JSON format to the textual format used in this project.
+
+## Cost Considerations
+On my first pass using Gemini from Zed, I provisioned an API key in Google Cloud, assigned it to the non-free tier, and that resulted in a cost of around $35 for the work.  That's great compared to the cost of human labor, but it's nearly double the monthly $20 subscription costs for either Claude or Codex.  For the second pass using Gemini from the commandline, I authenticated to Google and used the Gemini subscription from my Google account.
 
 ## Acknowledgments / References
 Discovering and reviewing the code for another Pips solving project,[pips](https://github.com/ematth/pips), I discovered that a JSON representation of the games is downloadable from the NY Times API; this helped to bulk up the set of examples.  The 2025-09-15 "hard" game is the most interesting because of the large `Exactly` constraint.
