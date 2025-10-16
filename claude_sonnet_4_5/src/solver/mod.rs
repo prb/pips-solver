@@ -3,15 +3,38 @@
 
 use crate::data_model::*;
 use std::collections::HashSet;
+use std::rc::Rc;
 
-pub fn solve(game: Game) -> Result<Vec<Placement>, String> {
-    solve_recursive(game, Vec::new())
+// A persistent, singly-linked list of placements.
+// Rc allows us to share the tail of the list between paths.
+enum Path {
+    Empty,
+    Node(Placement, Rc<Path>),
 }
 
-fn solve_recursive(game: Game, play_out: Vec<Placement>) -> Result<Vec<Placement>, String> {
+impl Path {
+    /// Convert the path to a Vec when a solution is found
+    fn to_vec(&self) -> Vec<Placement> {
+        let mut vec = Vec::new();
+        let mut current = self;
+        while let Path::Node(placement, next) = current {
+            vec.push(*placement);
+            current = next;
+        }
+        vec.reverse(); // The list is built backwards, so reverse it
+        vec
+    }
+}
+
+pub fn solve(game: Game) -> Result<Vec<Placement>, String> {
+    let initial_path = Rc::new(Path::Empty);
+    solve_recursive(game, initial_path).map(|path| path.to_vec())
+}
+
+fn solve_recursive(game: Game, path: Rc<Path>) -> Result<Rc<Path>, String> {
     // Base case: game is won
     if game.is_won() {
-        return Ok(play_out);
+        return Ok(path);
     }
 
     // Find the upper-most, left-most point in the board
@@ -34,11 +57,11 @@ fn solve_recursive(game: Game, play_out: Vec<Placement>) -> Result<Vec<Placement
 
             // Try to play this placement
             if let Ok(new_game) = game.play(&placement) {
-                // Recursively solve from the new game state
-                let mut new_play_out = play_out.clone();
-                new_play_out.push(placement);
+                // Build new path by prepending this placement
+                let new_path = Rc::new(Path::Node(placement, Rc::clone(&path)));
 
-                if let Ok(solution) = solve_recursive(new_game, new_play_out) {
+                // Recursively solve from the new game state
+                if let Ok(solution) = solve_recursive(new_game, new_path) {
                     return Ok(solution);
                 }
                 // If this path didn't work, backtrack and try the next option
