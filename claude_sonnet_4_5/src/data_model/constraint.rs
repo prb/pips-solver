@@ -279,6 +279,7 @@ impl Constraint {
 
             // MoreThan
             Constraint::MoreThan { target, points } => {
+                // Single point case: must exceed target
                 if points.len() == 1 {
                     if assignment.pips.value() as usize <= *target {
                         return Err(format!(
@@ -290,37 +291,22 @@ impl Constraint {
                     return Ok(Constraint::Empty);
                 }
 
-                if assignment.pips.value() as usize <= *target {
-                    // Can still satisfy constraint with remaining points
-                    let mut new_points = points.clone();
-                    new_points.remove(&assignment.point);
+                let mut new_points = points.clone();
+                new_points.remove(&assignment.point);
+                let new_target = target.saturating_sub(assignment.pips.value() as usize);
 
-                    Ok(Constraint::MoreThan {
-                        target: target - assignment.pips.value() as usize,
+                // Special case: if new_target == 5 and we have 1 point left, it must be exactly 6
+                if new_target == 5 && new_points.len() == 1 {
+                    Ok(Constraint::Exactly {
+                        target: 6,
                         points: new_points,
                     })
                 } else {
-                    // Assignment already exceeds target
-                    let mut new_points = points.clone();
-                    new_points.remove(&assignment.point);
-
-                    if new_points.len() == 0 {
-                        Ok(Constraint::Empty)
-                    } else if *target >= assignment.pips.value() as usize
-                        && target - assignment.pips.value() as usize == 5
-                        && new_points.len() == 1
-                    {
-                        // Special case: remaining point must be exactly 6
-                        Ok(Constraint::Exactly {
-                            target: 6,
-                            points: new_points,
-                        })
-                    } else {
-                        Ok(Constraint::MoreThan {
-                            target: target.saturating_sub(assignment.pips.value() as usize),
-                            points: new_points,
-                        })
-                    }
+                    // General case: reduce the target by the assignment value
+                    Ok(Constraint::MoreThan {
+                        target: new_target,
+                        points: new_points,
+                    })
                 }
             }
         }
@@ -587,6 +573,20 @@ mod tests {
         let c2 = Constraint::more_than(5, points2).unwrap();
         let a2 = Assignment::new(Pips::new(3).unwrap(), Point::new(0, 0));
         assert!(c2.reduce_a(&a2).is_err());
+
+        // Test special case: (v1-a.pips) == 5 and size(P) == 2 -> Exactly(6)
+        let points3 = make_points(&[(0, 0), (1, 0)]);
+        let c3 = Constraint::more_than(6, points3).unwrap();
+        let a3 = Assignment::new(Pips::new(1).unwrap(), Point::new(0, 0));
+
+        let result3 = c3.reduce_a(&a3).unwrap();
+        match result3 {
+            Constraint::Exactly { target, points } => {
+                assert_eq!(target, 6);
+                assert_eq!(points.len(), 1);
+            }
+            _ => panic!("Expected Exactly(6), got {:?}", result3),
+        }
     }
 
     #[test]
