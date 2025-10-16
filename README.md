@@ -45,6 +45,15 @@ Board:
 
 And I got Codex to write a converter from the NYTimes JSON format to the textual format used in this project.
 
+## Wrap Up
+I asked each of the models to compare/contrast the code from all three models, and Claude did a decent job of summarizing:
+
+> Summary
+> - Codex: Verbose and explicit with extensive helpers and validation
+> - Claude: Balanced OOP approach with good encapsulation via play()
+> - Gemini: Minimal functional style with compact representations
+> All three are correct implementations with similar algorithmic approaches but different stylistic choices and ownership strategies.  Codex is the most "enterprisey" with extensive validation and helpers, Claude takes a balanced OOP approach, and Gemini favors minimalism and functional patterns.
+
 ## Cost Considerations
 On my first pass using Gemini from Zed, I provisioned an API key in Google Cloud, assigned it to the non-free tier, and that resulted in a cost of around $35 for the work.  That's great compared to the cost of human labor, but it's nearly double the monthly $20 subscription costs for either Claude or Codex.  For the second pass using Gemini from the commandline, I authenticated to Google and used the Gemini subscription from my Google account.
 
