@@ -8,7 +8,7 @@ The game involves placing a list of dominos onto a pre-defined game board in a n
 
 # Project Goals
 
-- Define an idiomatic, functional data model for the board, constraints, and pieces.
+- Define an idiomatic, functional data model for the board, constraints, and pieces, using persistent data structures where appropriate for efficiency.
 - Solve a game using a backtracking-style algorithm.
 - Load a game from a simple textual representation in a file, solve it, and output the solution to standard output.
 
@@ -288,10 +288,10 @@ The game is specified by textual input read from a file that consists of a board
 Any deviation from this format is an error, and an informative error message should be returned to the user.  After loading the game, the game should be checked for validity with an informative error message returned if not.
 
 ## Example Game Representation
-An example game (from the "hard" puzzle on 2025-10-12); this is also in the file `examples/hard_2025-10-12.txt`.  See the `examples` directory for more examples from the Times.
+An example game (from the "hard" puzzle on 2025-10-12); this is also in the file `examples/game-2025-10-12-hard.txt`.  See the `examples` directory for more examples from the Times.
 
 ```
-// NYTimes Hard 2025-10-12
+// id 32 (hard) - Rodolfo Kurchan
 board:
    #
 ####
@@ -304,10 +304,10 @@ pieces:
 06,26,24,64,40,45,51,44,53
 
 constraints:
+AllSame None {(3,0),(3,1),(3,2)}
 Exactly 4 {(0,1)}
 AllDifferent {} {(1,1),(0,2),(1,2),(2,2)}
 Exactly 1 {(2,1)}
-AllSame None {(3,0),(3,1),(3,2)}
 Exactly 2 {(0,3)}
 Exactly 0 {(1,3)}
 Exactly 2 {(2,3)}
