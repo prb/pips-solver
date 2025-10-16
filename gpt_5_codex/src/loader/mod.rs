@@ -51,19 +51,21 @@ impl ParsedSections {
         }
 
         expect_header(&mut lines, "board:")?;
-        let board_lines = collect_until_blank(&mut lines);
+        let board_lines = collect_until_header(&mut lines, "pieces:");
 
         expect_header(&mut lines, "pieces:")?;
-        let pieces_lines = collect_until_blank(&mut lines);
-        if pieces_lines.len() > 1 {
+        let pieces_raw = collect_until_header(&mut lines, "constraints:");
+        let filtered_pieces: Vec<String> = pieces_raw
+            .into_iter()
+            .map(|s| s.trim().to_string())
+            .filter(|s| !s.is_empty())
+            .collect();
+        if filtered_pieces.len() > 1 {
             return Err(
                 "Pieces section must contain a single line of comma-separated values.".to_string(),
             );
         }
-        let pieces_line = pieces_lines
-            .get(0)
-            .map(|s| s.trim().to_string())
-            .unwrap_or_default();
+        let pieces_line = filtered_pieces.into_iter().next().unwrap_or_default();
 
         expect_header(&mut lines, "constraints:")?;
         let constraint_lines = collect_until_blank(&mut lines)
@@ -108,6 +110,20 @@ where
         } else {
             collected.push(lines.next().unwrap().to_string());
         }
+    }
+    collected
+}
+
+fn collect_until_header<'a, I>(lines: &mut std::iter::Peekable<I>, header: &str) -> Vec<String>
+where
+    I: Iterator<Item = &'a str>,
+{
+    let mut collected = Vec::new();
+    while let Some(line) = lines.peek() {
+        if line.trim().eq_ignore_ascii_case(header) {
+            break;
+        }
+        collected.push(lines.next().unwrap().to_string());
     }
     collected
 }

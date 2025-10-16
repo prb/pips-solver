@@ -62,9 +62,9 @@ impl Constraint {
                 if *target == 0 {
                     return Err("LessThan target must be positive.".to_string());
                 }
-                if *target >= (points.len() as u32) * (Pips::MAX as u32) {
+                if *target > (points.len() as u32) * (Pips::MAX as u32) {
                     return Err(
-                        "LessThan target must be less than maximum achievable sum.".to_string()
+                        "LessThan target must not exceed the maximum achievable sum.".to_string(),
                     );
                 }
                 Ok(())
