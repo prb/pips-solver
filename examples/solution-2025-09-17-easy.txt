@@ -1,0 +1,9 @@
+1: (3, 5) @ (0, 0) heading North
+2: (1, 5) @ (1, 0) heading West
+3: (0, 3) @ (1, 1) heading North
+4: (1, 3) @ (2, 1) heading West
+
+Board:
+551 
+3331
+ 0  

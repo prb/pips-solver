@@ -1,0 +1,22 @@
+// id 38 (medium) - Heidi Erwin
+board:
+ ##  
+###  
+  #  
+  #  
+  #  
+  #  
+#####
+
+pieces:
+01,11,12,13,14,15,16
+
+constraints:
+AllSame None {(1,0),(1,1)}
+MoreThan 3 {(0,1)}
+Exactly 2 {(2,1),(2,2),(2,3)}
+Exactly 2 {(2,4),(2,5)}
+LessThan 3 {(0,6)}
+Exactly 8 {(1,6),(2,6),(3,6)}
+MoreThan 4 {(4,6)}
+

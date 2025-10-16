@@ -1,0 +1,13 @@
+// id 33 (easy) - Rodolfo Kurchan
+board:
+###
+# #
+###
+
+pieces:
+22,04,46,52
+
+constraints:
+Exactly 6 {(0,0),(1,0),(2,0),(0,1)}
+Exactly 10 {(2,1),(2,2)}
+

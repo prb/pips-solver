@@ -1,0 +1,12 @@
+1: (0, 0) @ (2, 0) heading North
+2: (4, 4) @ (0, 1) heading North
+3: (2, 2) @ (1, 1) heading North
+4: (1, 1) @ (2, 2) heading North
+5: (3, 3) @ (1, 4) heading East
+
+Board:
+  0
+420
+421
+  1
+ 33

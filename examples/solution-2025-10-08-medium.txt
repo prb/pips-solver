@@ -1,0 +1,19 @@
+1: (1, 6) @ (3, 0) heading North
+2: (0, 1) @ (2, 1) heading North
+3: (3, 5) @ (4, 1) heading North
+4: (1, 5) @ (3, 2) heading South
+5: (0, 6) @ (1, 3) heading West
+6: (3, 6) @ (4, 3) heading East
+7: (2, 6) @ (0, 4) heading East
+8: (0, 4) @ (2, 4) heading South
+9: (4, 5) @ (3, 4) heading North
+10: (4, 6) @ (4, 4) heading North
+11: (5, 6) @ (5, 4) heading West
+
+Board:
+   6   
+  115  
+  013  
+ 60536 
+2605665
+  444  

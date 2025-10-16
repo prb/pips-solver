@@ -1,0 +1,14 @@
+// id 201 (easy) - Heidi Erwin
+board:
+###
+###
+## 
+
+pieces:
+00,31,33,40
+
+constraints:
+Exactly 1 {(1,0),(2,0)}
+AllSame None {(0,1),(1,1),(2,1)}
+Exactly 4 {(0,2),(1,2)}
+

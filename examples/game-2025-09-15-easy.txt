@@ -1,0 +1,13 @@
+// id 91 (easy) - Heidi Erwin
+board:
+########
+
+pieces:
+10,15,44,30
+
+constraints:
+Exactly 1 {(0,0)}
+Exactly 9 {(1,0),(2,0)}
+Exactly 4 {(3,0),(4,0)}
+Exactly 3 {(5,0),(6,0)}
+

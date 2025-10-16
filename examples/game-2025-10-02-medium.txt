@@ -1,0 +1,19 @@
+// id 66 (medium) - Rodolfo Kurchan
+board:
+#####
+  #  
+  #  
+  #  
+  #  
+  #  
+
+pieces:
+10,13,35,41,20
+
+constraints:
+MoreThan 4 {(0,0)}
+AllDifferent {} {(1,0),(2,0),(3,0)}
+Exactly 1 {(4,0)}
+Exactly 2 {(2,1),(2,2)}
+Exactly 4 {(2,3),(2,4)}
+

@@ -1,0 +1,17 @@
+// id 56 (medium) - Heidi Erwin
+board:
+##  
+####
+####
+  ##
+
+pieces:
+42,05,62,54,02,30
+
+constraints:
+Exactly 4 {(0,0),(1,0)}
+AllDifferent {} {(0,1),(0,2)}
+Exactly 20 {(1,1),(2,1),(1,2),(2,2)}
+AllSame None {(3,1),(3,2),(3,3)}
+LessThan 3 {(2,3)}
+

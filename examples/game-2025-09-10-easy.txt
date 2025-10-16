@@ -1,0 +1,14 @@
+// id 240 (easy) - Heidi Erwin
+board:
+## 
+###
+###
+
+pieces:
+14,36,23,33
+
+constraints:
+Exactly 6 {(0,0),(0,1)}
+AllSame None {(1,0),(1,1),(1,2)}
+Exactly 3 {(2,2)}
+

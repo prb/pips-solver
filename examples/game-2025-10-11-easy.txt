@@ -1,0 +1,16 @@
+// id 174 (easy) - Ian Livengood
+board:
+#  #
+#  #
+#  #
+####
+
+pieces:
+11,31,66,42,44
+
+constraints:
+Exactly 12 {(0,0),(0,1)}
+Exactly 3 {(3,0)}
+Exactly 3 {(3,1),(3,2),(3,3)}
+AllSame None {(0,3),(1,3),(2,3)}
+

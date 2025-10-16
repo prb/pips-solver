@@ -1,0 +1,27 @@
+// id 83 (hard) - Rodolfo Kurchan
+board:
+  ##     
+ ####### 
+ # ######
+## ######
+   ##  ##
+   ##  ##
+
+pieces:
+65,01,30,64,66,11,34,12,24,45,52,02,15,62,36,40
+
+constraints:
+AllSame None {(2,0),(3,0)}
+Exactly 6 {(1,1),(2,1)}
+Exactly 12 {(3,1),(4,1)}
+Exactly 5 {(5,1)}
+Exactly 6 {(6,1),(6,2),(6,3)}
+Exactly 10 {(7,1),(7,2)}
+Exactly 18 {(1,2),(0,3),(1,3)}
+AllDifferent {} {(4,2),(5,2)}
+Exactly 10 {(4,3),(5,3)}
+Exactly 0 {(7,3),(8,3),(7,4),(8,4)}
+Exactly 4 {(3,4),(4,4),(3,5),(4,5)}
+LessThan 3 {(7,5)}
+LessThan 2 {(8,5)}
+

@@ -1,0 +1,18 @@
+// id 88 (medium) - Heidi Erwin
+board:
+ # 
+ # 
+###
+ ##
+ # 
+ ##
+
+pieces:
+64,05,52,31,01
+
+constraints:
+Exactly 8 {(1,1),(1,2),(2,2),(1,3)}
+LessThan 3 {(0,2)}
+LessThan 5 {(2,3)}
+Exactly 10 {(1,4),(1,5)}
+

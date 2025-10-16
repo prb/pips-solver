@@ -1,0 +1,19 @@
+// id 43 (hard) - Rodolfo Kurchan
+board:
+###
+#  
+###
+# #
+###
+
+pieces:
+02,51,60,56,46,62
+
+constraints:
+AllSame None {(0,0),(1,0)}
+Exactly 6 {(2,0)}
+Exactly 6 {(0,1),(0,2),(0,3)}
+Exactly 6 {(1,2),(2,2)}
+MoreThan 6 {(2,3),(2,4)}
+AllSame None {(0,4),(1,4)}
+

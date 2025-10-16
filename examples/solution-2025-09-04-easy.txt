@@ -1,0 +1,10 @@
+1: (0, 3) @ (0, 0) heading West
+2: (1, 5) @ (0, 1) heading South
+3: (1, 6) @ (1, 1) heading South
+4: (3, 5) @ (0, 3) heading West
+
+Board:
+30
+11
+56
+53

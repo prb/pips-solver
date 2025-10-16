@@ -1,0 +1,18 @@
+// id 138 (easy) - Rodolfo Kurchan
+board:
+####
+ ###
+ # #
+ ###
+
+pieces:
+42,20,26,51,33,16
+
+constraints:
+LessThan 2 {(0,0)}
+AllDifferent {} {(1,0),(1,1),(1,2)}
+AllSame None {(2,0),(3,0)}
+Exactly 2 {(3,1)}
+Exactly 12 {(3,2),(3,3)}
+Exactly 1 {(1,3)}
+

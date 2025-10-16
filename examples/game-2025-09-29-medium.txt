@@ -1,0 +1,19 @@
+// id 166 (medium) - Rodolfo Kurchan
+board:
+# ####  
+#      #
+## ## ##
+   ## # 
+
+pieces:
+44,04,03,11,55,46,02,24
+
+constraints:
+MoreThan 4 {(2,0)}
+AllSame None {(3,0),(4,0)}
+LessThan 2 {(5,0)}
+Exactly 2 {(0,1),(0,2),(1,2)}
+Exactly 3 {(3,2)}
+AllSame None {(4,2),(4,3)}
+AllSame None {(6,2),(7,2),(6,3)}
+

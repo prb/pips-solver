@@ -1,0 +1,22 @@
+// id 125 (hard) - Heidi Erwin
+board:
+##    
+##    
+#### #
+ #####
+  ####
+
+pieces:
+41,56,61,31,51,10,34,12,04
+
+constraints:
+AllDifferent {} {(0,0),(0,1),(0,2)}
+Exactly 0 {(1,0),(1,1)}
+AllSame None {(1,2),(2,2),(2,3),(3,3),(3,4),(4,4)}
+Exactly 2 {(3,2)}
+Exactly 7 {(5,2),(5,3)}
+Exactly 3 {(1,3)}
+Exactly 5 {(4,3)}
+Exactly 4 {(2,4)}
+Exactly 6 {(5,4)}
+

@@ -1,0 +1,22 @@
+// id 54 (hard) - Heidi Erwin
+board:
+      ##
+ #### ##
+ #  # # 
+## ## # 
+## ##   
+
+pieces:
+10,11,16,14,13,12,63,00,06,62
+
+constraints:
+LessThan 6 {(6,0),(6,1),(6,2),(6,3)}
+Exactly 4 {(1,1),(2,1),(3,1),(4,1)}
+Exactly 3 {(7,1)}
+AllSame None {(1,2),(0,3),(1,3),(0,4)}
+Exactly 6 {(4,2)}
+MoreThan 2 {(3,3)}
+Exactly 6 {(4,3)}
+Exactly 6 {(1,4)}
+Exactly 6 {(3,4)}
+

@@ -1,0 +1,18 @@
+// id 221 (easy) - Rodolfo Kurchan
+board:
+  #  
+  #  
+  #  
+#####
+  #  
+  #  
+
+pieces:
+15,11,46,33,06
+
+constraints:
+AllSame None {(2,0),(2,1),(2,2)}
+AllSame None {(0,3),(1,3)}
+Exactly 5 {(2,3),(3,3)}
+Exactly 6 {(2,5)}
+

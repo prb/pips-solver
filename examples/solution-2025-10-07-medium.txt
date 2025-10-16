@@ -1,0 +1,16 @@
+1: (1, 2) @ (0, 0) heading South
+2: (0, 6) @ (1, 0) heading East
+3: (3, 6) @ (3, 0) heading South
+4: (2, 6) @ (1, 1) heading East
+5: (2, 4) @ (0, 2) heading West
+6: (3, 3) @ (0, 3) heading North
+7: (2, 5) @ (1, 3) heading East
+8: (0, 1) @ (3, 3) heading North
+9: (3, 5) @ (1, 4) heading East
+
+Board:
+1063
+2266
+42  
+3251
+3350

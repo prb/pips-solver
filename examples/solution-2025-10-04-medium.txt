@@ -1,0 +1,14 @@
+1: (0, 0) @ (0, 0) heading East
+2: (0, 1) @ (2, 0) heading East
+3: (1, 2) @ (4, 0) heading South
+4: (1, 4) @ (5, 0) heading South
+5: (4, 5) @ (0, 1) heading East
+6: (0, 2) @ (2, 1) heading East
+7: (0, 5) @ (2, 2) heading South
+8: (6, 6) @ (3, 2) heading North
+
+Board:
+000111
+450224
+  06  
+  56  

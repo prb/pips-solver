@@ -1,0 +1,19 @@
+// id 231 (easy) - Heidi Erwin
+board:
+## 
+ # 
+ # 
+ # 
+ # 
+ ##
+
+pieces:
+23,45,43,42
+
+constraints:
+Exactly 2 {(0,0)}
+Exactly 7 {(1,0),(1,1)}
+Exactly 7 {(1,2),(1,3)}
+Exactly 9 {(1,4),(1,5)}
+Exactly 2 {(2,5)}
+

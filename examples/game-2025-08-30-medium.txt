@@ -1,0 +1,18 @@
+// id 157 (medium) - Heidi Erwin
+board:
+ ## 
+ ## 
+ ## 
+####
+ ## 
+
+pieces:
+22,00,34,53,16,11
+
+constraints:
+Exactly 6 {(1,0),(2,0),(1,1),(2,1)}
+AllDifferent {} {(1,2),(2,2),(1,3),(2,3)}
+Exactly 1 {(0,3)}
+Exactly 2 {(3,3)}
+LessThan 3 {(1,4),(2,4)}
+

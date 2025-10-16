@@ -1,0 +1,13 @@
+// id 181 (easy) - Ian Livengood
+board:
+######
+#    #
+
+pieces:
+54,55,53,16
+
+constraints:
+Exactly 10 {(0,0),(1,0),(0,1)}
+Exactly 10 {(2,0),(3,0)}
+Exactly 10 {(5,0),(5,1)}
+

@@ -1,0 +1,16 @@
+// id 156 (easy) - Heidi Erwin
+board:
+ # 
+###
+# #
+## 
+
+pieces:
+33,53,31,23
+
+constraints:
+Exactly 3 {(1,0)}
+AllSame None {(0,1),(1,1),(2,1)}
+Exactly 7 {(0,2),(0,3)}
+Exactly 3 {(1,3)}
+

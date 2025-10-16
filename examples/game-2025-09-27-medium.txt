@@ -1,0 +1,18 @@
+// id 37 (medium) - Heidi Erwin
+board:
+  #
+###
+###
+  #
+ ##
+
+pieces:
+00,11,22,33,44
+
+constraints:
+LessThan 2 {(2,0)}
+AllDifferent {} {(0,1),(1,1),(2,1),(2,2)}
+MoreThan 2 {(0,2)}
+MoreThan 1 {(1,2)}
+Exactly 7 {(2,3),(1,4),(2,4)}
+

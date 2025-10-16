@@ -1,0 +1,14 @@
+// id 134 (easy) - Rodolfo Kurchan
+board:
+## 
+###
+###
+
+pieces:
+51,14,42,13
+
+constraints:
+Exactly 8 {(0,0),(0,1)}
+LessThan 5 {(2,1)}
+AllSame None {(0,2),(1,2),(2,2)}
+

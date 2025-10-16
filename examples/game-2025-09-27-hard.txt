@@ -1,0 +1,33 @@
+// id 101 (hard) - Rodolfo Kurchan
+board:
+  #      
+####    #
+#########
+  ###### 
+  #####  
+  #   #  
+ ##  ##  
+
+pieces:
+13,12,00,15,61,22,42,01,62,60,44,53,33,43,02,11
+
+constraints:
+AllSame None {(2,0),(2,1),(3,1)}
+Exactly 1 {(1,1)}
+Exactly 5 {(8,1)}
+Exactly 2 {(1,2)}
+AllDifferent {} {(2,2),(3,2),(4,2),(3,3),(4,3)}
+Exactly 3 {(5,2)}
+Exactly 4 {(6,2)}
+AllSame None {(7,2),(8,2)}
+Exactly 2 {(2,3)}
+Exactly 0 {(5,3),(6,3)}
+Exactly 2 {(7,3)}
+Exactly 1 {(2,4)}
+Exactly 4 {(3,4)}
+Exactly 18 {(4,4),(5,4),(6,4)}
+Exactly 1 {(2,5),(2,6)}
+AllSame None {(6,5),(6,6)}
+Exactly 3 {(1,6)}
+Exactly 4 {(5,6)}
+

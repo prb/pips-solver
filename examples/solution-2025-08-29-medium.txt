@@ -1,0 +1,11 @@
+1: (2, 6) @ (2, 0) heading North
+2: (0, 6) @ (3, 0) heading West
+3: (4, 5) @ (0, 1) heading West
+4: (0, 2) @ (3, 1) heading North
+5: (2, 2) @ (4, 1) heading East
+6: (0, 4) @ (1, 2) heading West
+
+Board:
+  660 
+542222
+ 400  

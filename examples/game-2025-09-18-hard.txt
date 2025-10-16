@@ -1,0 +1,23 @@
+// id 115 (hard) - Rodolfo Kurchan
+board:
+##    
+##    
+##    
+##    
+######
+######
+
+pieces:
+21,36,42,15,25,05,11,22,04,35
+
+constraints:
+Exactly 2 {(0,0),(0,1)}
+MoreThan 4 {(1,0)}
+AllSame None {(1,1),(1,2),(1,3),(1,4),(1,5)}
+MoreThan 3 {(0,2)}
+Exactly 10 {(0,3),(0,4)}
+Exactly 2 {(2,4),(2,5)}
+Exactly 10 {(5,4),(5,5)}
+Exactly 0 {(0,5)}
+AllSame None {(3,5),(4,5)}
+

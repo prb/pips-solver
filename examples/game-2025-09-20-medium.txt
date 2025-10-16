@@ -1,0 +1,18 @@
+// id 232 (medium) - Heidi Erwin
+board:
+ ####
+## # 
+#### 
+#    
+
+pieces:
+32,01,14,21,11,22
+
+constraints:
+Exactly 4 {(1,0),(1,1),(1,2)}
+AllSame None {(2,0),(3,0),(3,1)}
+Exactly 1 {(4,0)}
+Exactly 1 {(0,1)}
+AllSame None {(0,2),(0,3)}
+Exactly 7 {(2,2),(3,2)}
+

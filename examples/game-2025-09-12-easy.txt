@@ -1,0 +1,14 @@
+// id 204 (easy) - Heidi Erwin
+board:
+##  
+### 
+# ##
+
+pieces:
+56,03,05,62
+
+constraints:
+Exactly 8 {(0,0),(0,1)}
+Exactly 11 {(1,0),(1,1)}
+Exactly 0 {(2,1),(2,2)}
+

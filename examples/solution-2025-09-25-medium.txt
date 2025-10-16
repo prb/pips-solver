@@ -1,0 +1,17 @@
+1: (0, 3) @ (2, 0) heading East
+2: (0, 0) @ (1, 1) heading East
+3: (2, 3) @ (3, 1) heading West
+4: (1, 3) @ (0, 2) heading East
+5: (3, 3) @ (2, 2) heading East
+6: (1, 5) @ (4, 2) heading East
+7: (0, 1) @ (0, 3) heading South
+8: (4, 5) @ (2, 3) heading South
+9: (2, 6) @ (5, 3) heading North
+10: (2, 5) @ (3, 4) heading West
+
+Board:
+  03  
+ 0032 
+133315
+0 4  6
+1 5522

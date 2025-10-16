@@ -1,0 +1,7 @@
+1: (1, 5) @ (0, 0) heading East
+2: (4, 4) @ (2, 0) heading East
+3: (0, 3) @ (4, 0) heading East
+4: (0, 1) @ (6, 0) heading East
+
+Board:
+15440301

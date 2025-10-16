@@ -1,0 +1,20 @@
+1: (0, 5) @ (0, 0) heading West
+2: (4, 5) @ (0, 1) heading West
+3: (4, 6) @ (0, 2) heading West
+4: (1, 4) @ (0, 3) heading East
+5: (2, 4) @ (0, 4) heading East
+6: (3, 4) @ (0, 5) heading East
+7: (0, 4) @ (0, 6) heading East
+8: (4, 4) @ (2, 6) heading East
+9: (0, 1) @ (0, 7) heading East
+10: (2, 2) @ (2, 7) heading East
+
+Board:
+50  
+54  
+64  
+14  
+24  
+34  
+0444
+0122

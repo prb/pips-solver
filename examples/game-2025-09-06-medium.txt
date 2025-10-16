@@ -1,0 +1,16 @@
+// id 85 (medium) - Heidi Erwin
+board:
+## 
+###
+###
+
+pieces:
+25,31,34,24
+
+constraints:
+AllSame None {(0,0),(0,1)}
+Exactly 9 {(1,0),(1,1)}
+AllSame None {(2,1),(2,2)}
+LessThan 3 {(0,2)}
+Exactly 4 {(1,2)}
+

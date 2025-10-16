@@ -1,0 +1,22 @@
+// id 105 (medium) - Rodolfo Kurchan
+board:
+####
+####
+#  #
+#  #
+####
+####
+
+pieces:
+54,66,23,55,63,46,30,05,25,41
+
+constraints:
+LessThan 4 {(0,0)}
+AllSame None {(1,0),(1,1)}
+LessThan 4 {(2,0)}
+LessThan 4 {(3,0)}
+AllSame None {(0,1),(0,2),(0,3),(0,4)}
+AllSame None {(2,1),(3,1),(3,2),(3,3),(3,4)}
+AllDifferent {} {(1,4),(2,4),(1,5)}
+Exactly 0 {(2,5),(3,5)}
+

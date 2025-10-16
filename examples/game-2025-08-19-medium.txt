@@ -1,0 +1,17 @@
+// id 154 (medium) - Heidi Erwin
+board:
+#  # 
+#### 
+  ###
+  ###
+
+pieces:
+21,16,13,34,33,10
+
+constraints:
+MoreThan 3 {(3,0)}
+AllSame None {(0,1),(1,1),(2,1),(3,1)}
+Exactly 3 {(2,2),(3,2),(3,3)}
+Exactly 2 {(2,3)}
+Exactly 6 {(4,3)}
+

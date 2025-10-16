@@ -1,0 +1,16 @@
+// id 121 (medium) - Heidi Erwin
+board:
+###
+# #
+# #
+# #
+###
+
+pieces:
+16,11,54,64,24,41
+
+constraints:
+Exactly 12 {(1,0),(2,0)}
+AllSame None {(2,1),(2,2),(2,3),(2,4)}
+Exactly 17 {(0,2),(0,3),(0,4),(1,4)}
+

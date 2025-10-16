@@ -1,0 +1,9 @@
+1: (2, 3) @ (0, 0) heading West
+2: (2, 5) @ (2, 0) heading East
+3: (2, 2) @ (1, 1) heading East
+4: (6, 6) @ (1, 2) heading East
+
+Board:
+3225
+ 22 
+ 66 

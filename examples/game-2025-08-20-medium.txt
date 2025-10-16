@@ -1,0 +1,17 @@
+// id 24 (medium) - Ian Livengood
+board:
+  ##
+ ###
+ ###
+##  
+
+pieces:
+33,66,63,62,11
+
+constraints:
+AllSame None {(2,0),(2,1)}
+Exactly 2 {(3,0),(3,1)}
+Exactly 2 {(1,1)}
+AllSame None {(1,2),(2,2),(3,2),(1,3)}
+Exactly 3 {(0,3)}
+

@@ -1,0 +1,21 @@
+// id 193 (medium) - Rodolfo Kurchan
+board:
+  ##  
+ #### 
+######
+# #  #
+# ####
+
+pieces:
+31,54,00,23,03,10,26,52,33,15
+
+constraints:
+AllSame None {(2,0),(1,1),(2,1)}
+AllSame None {(3,0),(3,1),(1,2),(2,2),(3,2)}
+Exactly 3 {(4,1),(4,2)}
+Exactly 1 {(0,2),(0,3)}
+Exactly 11 {(5,2),(5,3)}
+Exactly 1 {(0,4)}
+Exactly 10 {(2,4),(3,4)}
+AllSame None {(4,4),(5,4)}
+

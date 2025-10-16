@@ -1,0 +1,16 @@
+// id 225 (easy) - Heidi Erwin
+board:
+##
+##
+##
+##
+
+pieces:
+51,30,16,53
+
+constraints:
+Exactly 5 {(0,0),(0,1),(1,1)}
+Exactly 0 {(1,0)}
+Exactly 10 {(0,2),(0,3)}
+Exactly 9 {(1,2),(1,3)}
+

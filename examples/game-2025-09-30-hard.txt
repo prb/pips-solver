@@ -1,0 +1,31 @@
+// id 206 (hard) - Heidi Erwin
+board:
+# #    
+# #    
+###    
+# #   #
+#######
+#######
+# # ## 
+
+pieces:
+61,35,03,56,15,20,21,00,11,22,33,44,55,66
+
+constraints:
+Exactly 11 {(0,0),(0,1)}
+Exactly 8 {(2,0),(2,1)}
+AllSame None {(0,2),(0,3)}
+Exactly 6 {(1,2)}
+AllSame None {(2,2),(2,3)}
+Exactly 0 {(6,3)}
+MoreThan 3 {(0,4)}
+AllSame None {(1,4),(2,4)}
+Exactly 17 {(4,4),(5,4),(4,5)}
+Exactly 2 {(6,4),(5,5),(6,5)}
+Exactly 5 {(0,5)}
+LessThan 5 {(1,5),(2,5)}
+MoreThan 4 {(3,5)}
+Exactly 3 {(0,6)}
+LessThan 4 {(2,6)}
+Exactly 3 {(4,6)}
+

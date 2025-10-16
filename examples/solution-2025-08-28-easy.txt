@@ -1,0 +1,11 @@
+1: (4, 4) @ (0, 0) heading North
+2: (2, 4) @ (0, 2) heading North
+3: (5, 5) @ (0, 4) heading East
+4: (1, 5) @ (2, 4) heading West
+
+Board:
+4   
+4   
+4   
+2   
+5551

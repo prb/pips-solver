@@ -1,0 +1,21 @@
+// id 64 (medium) - Rodolfo Kurchan
+board:
+####
+#  #
+#  #
+####
+#   
+#   
+
+pieces:
+23,24,62,11,14,12,00
+
+constraints:
+Exactly 2 {(0,0),(0,1)}
+Exactly 0 {(1,0)}
+Exactly 6 {(2,0)}
+Exactly 5 {(3,0),(3,1)}
+Exactly 1 {(0,2)}
+Exactly 3 {(3,2),(3,3)}
+Exactly 4 {(0,3),(0,4),(0,5)}
+

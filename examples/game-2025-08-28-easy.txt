@@ -1,0 +1,15 @@
+// id 120 (easy) - Heidi Erwin
+board:
+#   
+#   
+#   
+#   
+####
+
+pieces:
+55,51,24,44
+
+constraints:
+AllSame None {(0,0),(0,1),(0,2)}
+Exactly 17 {(0,3),(0,4),(1,4),(2,4)}
+

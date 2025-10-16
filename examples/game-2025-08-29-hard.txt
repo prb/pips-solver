@@ -1,0 +1,26 @@
+// id 109 (hard) - Rodolfo Kurchan
+board:
+##
+##
+##
+##
+##
+##
+##
+##
+##
+##
+
+pieces:
+11,53,66,56,60,20,43,51,26,21
+
+constraints:
+Exactly 9 {(0,0),(0,1)}
+AllSame None {(0,2),(1,2)}
+AllSame None {(0,3),(0,4)}
+Exactly 12 {(1,3),(1,4)}
+Exactly 2 {(0,5),(1,5),(0,6),(1,6)}
+Exactly 10 {(0,7),(1,7)}
+Exactly 3 {(0,8)}
+Exactly 18 {(1,8),(0,9),(1,9)}
+

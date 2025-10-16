@@ -1,0 +1,18 @@
+1: (4, 5) @ (2, 0) heading North
+2: (1, 5) @ (3, 0) heading West
+3: (3, 5) @ (1, 1) heading North
+4: (2, 5) @ (3, 1) heading North
+5: (4, 4) @ (4, 1) heading North
+6: (3, 3) @ (5, 1) heading North
+7: (5, 5) @ (6, 1) heading North
+8: (0, 0) @ (2, 2) heading North
+9: (5, 6) @ (0, 3) heading West
+10: (2, 4) @ (3, 3) heading East
+11: (3, 4) @ (5, 3) heading West
+12: (1, 2) @ (7, 3) heading West
+
+Board:
+  551    
+ 545435  
+ 302435  
+650244321

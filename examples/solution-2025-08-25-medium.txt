@@ -1,0 +1,12 @@
+1: (3, 4) @ (1, 0) heading West
+2: (1, 4) @ (2, 1) heading West
+3: (5, 5) @ (0, 2) heading North
+4: (0, 6) @ (1, 2) heading South
+5: (0, 5) @ (2, 2) heading South
+6: (2, 5) @ (3, 3) heading West
+
+Board:
+ 43  
+  41 
+500  
+56552

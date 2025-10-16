@@ -1,0 +1,15 @@
+// id 34 (easy) - Rodolfo Kurchan
+board:
+##
+# 
+# 
+##
+
+pieces:
+21,22,14
+
+constraints:
+MoreThan 2 {(0,0)}
+AllSame None {(0,2),(0,3)}
+LessThan 2 {(1,3)}
+

@@ -1,0 +1,14 @@
+// id 219 (easy) - Rodolfo Kurchan
+board:
+ ###
+   #
+####
+
+pieces:
+21,56,10,52
+
+constraints:
+AllSame None {(2,0),(3,0)}
+AllSame None {(3,1),(3,2)}
+Exactly 10 {(1,2),(2,2)}
+

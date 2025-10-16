@@ -1,0 +1,17 @@
+// id 104 (medium) - Rodolfo Kurchan
+board:
+####
+#  #
+#  #
+#  #
+####
+
+pieces:
+50,06,65,33,40,43,53
+
+constraints:
+Exactly 10 {(1,0),(2,0)}
+Exactly 11 {(3,0),(3,1)}
+Exactly 10 {(0,2),(0,3)}
+AllSame None {(0,4),(1,4),(2,4),(3,4)}
+

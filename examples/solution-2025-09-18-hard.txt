@@ -1,0 +1,18 @@
+1: (1, 5) @ (0, 0) heading East
+2: (1, 2) @ (0, 1) heading East
+3: (2, 4) @ (0, 2) heading West
+4: (2, 5) @ (0, 3) heading West
+5: (0, 5) @ (0, 4) heading North
+6: (2, 2) @ (1, 4) heading North
+7: (1, 1) @ (2, 4) heading North
+8: (3, 5) @ (3, 4) heading North
+9: (0, 4) @ (4, 4) heading East
+10: (3, 6) @ (4, 5) heading East
+
+Board:
+15    
+12    
+42    
+52    
+521504
+021336

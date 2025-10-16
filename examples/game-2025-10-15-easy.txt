@@ -1,0 +1,13 @@
+// id 132 (easy) - Rodolfo Kurchan
+board:
+## 
+###
+###
+
+pieces:
+25,23,50,55
+
+constraints:
+AllSame None {(1,0),(1,1),(2,1),(1,2)}
+AllSame None {(0,1),(0,2)}
+

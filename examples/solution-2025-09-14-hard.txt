@@ -1,0 +1,27 @@
+1: (4, 6) @ (3, 0) heading South
+2: (1, 5) @ (1, 1) heading East
+3: (4, 5) @ (2, 2) heading South
+4: (1, 4) @ (3, 3) heading North
+5: (0, 1) @ (0, 4) heading South
+6: (2, 2) @ (1, 4) heading East
+7: (2, 6) @ (4, 4) heading South
+8: (2, 3) @ (2, 5) heading South
+9: (5, 6) @ (3, 5) heading North
+10: (0, 4) @ (5, 5) heading North
+11: (1, 1) @ (4, 6) heading North
+12: (3, 3) @ (7, 6) heading North
+13: (0, 2) @ (2, 7) heading North
+14: (0, 5) @ (5, 7) heading South
+15: (0, 0) @ (0, 8) heading East
+16: (3, 5) @ (6, 8) heading West
+
+Board:
+   4    
+ 156    
+  4     
+  54    
+02212   
+1 2664  
+  3510 3
+  2 10 3
+000  553

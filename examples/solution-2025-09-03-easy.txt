@@ -1,0 +1,10 @@
+1: (0, 4) @ (0, 0) heading South
+2: (3, 6) @ (1, 1) heading North
+3: (2, 4) @ (2, 1) heading North
+4: (1, 2) @ (3, 2) heading North
+
+Board:
+0   
+464 
+ 322
+   1

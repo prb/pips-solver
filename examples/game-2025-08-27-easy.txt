@@ -1,0 +1,13 @@
+// id 176 (easy) - Ian Livengood
+board:
+####
+####
+
+pieces:
+60,01,66,00
+
+constraints:
+Exactly 1 {(0,0)}
+AllSame None {(1,0),(0,1),(1,1),(2,1)}
+Exactly 18 {(2,0),(3,0),(3,1)}
+

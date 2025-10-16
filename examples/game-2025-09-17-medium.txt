@@ -1,0 +1,20 @@
+// id 216 (medium) - Rodolfo Kurchan
+board:
+###  
+# #  
+###  
+# ## 
+#  ##
+
+pieces:
+42,16,43,23,45,00,52
+
+constraints:
+Exactly 0 {(0,0)}
+Exactly 6 {(2,0)}
+Exactly 3 {(2,1)}
+AllSame None {(0,2),(0,3)}
+Exactly 6 {(1,2),(2,2),(2,3)}
+Exactly 8 {(3,3),(3,4)}
+Exactly 5 {(0,4)}
+

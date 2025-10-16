@@ -1,0 +1,16 @@
+1: (2, 2) @ (0, 0) heading North
+2: (5, 5) @ (5, 0) heading North
+3: (5, 6) @ (1, 1) heading South
+4: (0, 6) @ (4, 1) heading South
+5: (1, 6) @ (2, 2) heading East
+6: (3, 6) @ (1, 3) heading North
+7: (4, 6) @ (2, 3) heading North
+8: (6, 6) @ (3, 3) heading North
+9: (2, 6) @ (4, 3) heading North
+
+Board:
+2    5
+25  05
+ 6166 
+ 6666 
+ 3462 

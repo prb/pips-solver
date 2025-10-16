@@ -1,0 +1,17 @@
+// id 67 (easy) - Rodolfo Kurchan
+board:
+#  #
+#  #
+#  #
+#  #
+####
+
+pieces:
+44,46,35,15,14,66
+
+constraints:
+AllSame None {(0,0),(0,1),(0,2)}
+Exactly 8 {(0,3),(0,4)}
+Exactly 8 {(3,3),(3,4)}
+AllSame None {(1,4),(2,4)}
+

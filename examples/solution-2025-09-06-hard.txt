@@ -1,0 +1,18 @@
+1: (3, 6) @ (2, 0) heading East
+2: (2, 5) @ (4, 0) heading North
+3: (0, 0) @ (5, 0) heading North
+4: (1, 3) @ (2, 1) heading West
+5: (5, 5) @ (0, 2) heading North
+6: (2, 3) @ (1, 2) heading East
+7: (4, 6) @ (3, 2) heading South
+8: (4, 5) @ (1, 3) heading West
+9: (1, 6) @ (2, 4) heading East
+10: (0, 3) @ (2, 5) heading East
+
+Board:
+  3650
+  3120
+5234  
+5546  
+  16  
+  03  

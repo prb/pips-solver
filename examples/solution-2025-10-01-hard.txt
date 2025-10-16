@@ -1,0 +1,20 @@
+1: (0, 5) @ (0, 0) heading West
+2: (0, 0) @ (2, 0) heading East
+3: (0, 6) @ (4, 0) heading East
+4: (2, 5) @ (0, 1) heading North
+5: (0, 4) @ (2, 1) heading South
+6: (0, 1) @ (3, 1) heading South
+7: (1, 6) @ (5, 1) heading North
+8: (1, 3) @ (1, 2) heading South
+9: (1, 1) @ (4, 2) heading North
+10: (0, 3) @ (0, 3) heading North
+11: (1, 2) @ (5, 3) heading South
+12: (0, 2) @ (1, 4) heading East
+13: (2, 2) @ (3, 4) heading East
+
+Board:
+500006
+5 00 6
+214111
+33  11
+002222

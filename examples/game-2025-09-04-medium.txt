@@ -1,0 +1,16 @@
+// id 226 (medium) - Heidi Erwin
+board:
+###
+###
+###
+###
+
+pieces:
+15,55,30,25,53,23
+
+constraints:
+AllSame None {(0,0),(0,1)}
+AllSame None {(1,0),(2,0),(1,1),(2,1)}
+AllSame None {(0,2),(1,2),(2,2)}
+Exactly 1 {(1,3)}
+

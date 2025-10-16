@@ -1,0 +1,24 @@
+// id 97 (hard) - Rodolfo Kurchan
+board:
+   ##   
+    #   
+    #   
+        
+#  # ###
+#### ###
+########
+
+pieces:
+34,12,46,15,22,01,65,11,53,02,62,32
+
+constraints:
+MoreThan 9 {(4,0),(4,1)}
+LessThan 3 {(4,2)}
+AllSame None {(5,4),(6,4),(5,5),(5,6),(6,6)}
+AllSame None {(7,4),(7,5)}
+MoreThan 11 {(0,5),(0,6)}
+Exactly 7 {(1,5),(1,6)}
+LessThan 1 {(2,5),(3,5)}
+LessThan 5 {(6,5)}
+Exactly 3 {(2,6),(3,6),(4,6)}
+

@@ -1,0 +1,8 @@
+1: (0, 1) @ (0, 0) heading North
+2: (0, 6) @ (1, 0) heading East
+3: (6, 6) @ (3, 0) heading North
+4: (0, 0) @ (1, 1) heading East
+
+Board:
+1066
+0006

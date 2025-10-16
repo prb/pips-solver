@@ -1,0 +1,15 @@
+// id 235 (easy) - Rodolfo Kurchan
+board:
+#   
+### 
+ ###
+   #
+
+pieces:
+36,21,42,40
+
+constraints:
+Exactly 4 {(0,1)}
+Exactly 10 {(1,1),(2,1)}
+AllSame None {(2,2),(3,2)}
+

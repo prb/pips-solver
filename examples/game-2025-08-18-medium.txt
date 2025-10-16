@@ -1,0 +1,16 @@
+// id 124 (medium) - Heidi Erwin
+board:
+##   
+## ##
+ ####
+
+pieces:
+16,44,63,26,56
+
+constraints:
+LessThan 13 {(0,0),(0,1),(1,1)}
+Exactly 18 {(3,1),(2,2),(3,2)}
+LessThan 3 {(4,1)}
+Exactly 2 {(1,2)}
+MoreThan 4 {(4,2)}
+

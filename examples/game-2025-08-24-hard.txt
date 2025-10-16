@@ -1,0 +1,19 @@
+// id 114 (hard) - Rodolfo Kurchan
+board:
+##  ##
+##  ##
+######
+######
+
+pieces:
+26,56,46,60,03,43,55,61,01,66
+
+constraints:
+LessThan 3 {(0,0)}
+AllSame None {(1,0),(1,1),(4,1),(1,2),(2,2),(3,2),(4,2)}
+LessThan 2 {(4,0)}
+Exactly 2 {(5,0),(5,1)}
+AllSame None {(0,2),(0,3)}
+Exactly 0 {(5,2),(5,3)}
+Exactly 10 {(2,3),(3,3)}
+

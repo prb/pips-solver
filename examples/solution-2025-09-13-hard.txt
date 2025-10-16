@@ -1,0 +1,25 @@
+1: (4, 5) @ (1, 0) heading North
+2: (1, 6) @ (2, 0) heading West
+3: (1, 4) @ (4, 0) heading East
+4: (3, 4) @ (2, 1) heading West
+5: (3, 5) @ (4, 1) heading East
+6: (3, 3) @ (3, 2) heading North
+7: (1, 5) @ (7, 3) heading East
+8: (2, 2) @ (0, 4) heading East
+9: (2, 3) @ (2, 4) heading East
+10: (0, 3) @ (4, 4) heading West
+11: (0, 1) @ (6, 4) heading East
+12: (1, 2) @ (1, 5) heading East
+13: (2, 5) @ (3, 5) heading East
+14: (5, 6) @ (5, 5) heading West
+15: (0, 4) @ (2, 6) heading East
+16: (6, 6) @ (4, 6) heading East
+
+Board:
+ 56114   
+ 44335   
+   3     
+   3   15
+22233001 
+ 122565  
+  0466   

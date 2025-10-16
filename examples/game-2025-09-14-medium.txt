@@ -1,0 +1,20 @@
+// id 215 (medium) - Rodolfo Kurchan
+board:
+  #  
+  #  
+#####
+# ###
+#####
+
+pieces:
+31,55,21,56,50,33,54,11
+
+constraints:
+Exactly 1 {(2,0)}
+AllSame None {(0,2),(0,3)}
+AllSame None {(3,2),(4,2),(2,3),(3,3),(4,3)}
+Exactly 2 {(0,4),(1,4)}
+Exactly 2 {(2,4)}
+MoreThan 5 {(3,4)}
+LessThan 4 {(4,4)}
+

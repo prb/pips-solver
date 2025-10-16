@@ -1,0 +1,18 @@
+1: (0, 5) @ (0, 0) heading East
+2: (5, 5) @ (2, 0) heading East
+3: (2, 5) @ (0, 1) heading East
+4: (5, 6) @ (2, 1) heading South
+5: (3, 6) @ (3, 1) heading South
+6: (6, 6) @ (2, 3) heading East
+7: (1, 6) @ (2, 4) heading North
+8: (0, 6) @ (3, 4) heading North
+9: (2, 6) @ (4, 4) heading North
+10: (4, 6) @ (5, 4) heading North
+
+Board:
+0555  
+2553  
+  66  
+  66  
+  6666
+  1024

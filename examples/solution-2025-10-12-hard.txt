@@ -1,0 +1,17 @@
+1: (4, 4) @ (3, 0) heading North
+2: (0, 4) @ (0, 1) heading North
+3: (1, 5) @ (1, 1) heading West
+4: (0, 6) @ (1, 2) heading North
+5: (2, 4) @ (2, 2) heading North
+6: (4, 5) @ (3, 2) heading South
+7: (2, 6) @ (0, 3) heading South
+8: (4, 6) @ (1, 4) heading South
+9: (3, 5) @ (2, 4) heading West
+
+Board:
+   4
+4514
+0644
+2025
+6453
+ 6  

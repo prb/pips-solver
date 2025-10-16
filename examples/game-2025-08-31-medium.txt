@@ -1,0 +1,15 @@
+// id 133 (medium) - Rodolfo Kurchan
+board:
+  ##
+####
+##  
+
+pieces:
+21,16,54,04
+
+constraints:
+MoreThan 6 {(3,0),(3,1)}
+MoreThan 4 {(0,1)}
+MoreThan 6 {(1,1),(2,1)}
+AllSame None {(0,2),(1,2)}
+

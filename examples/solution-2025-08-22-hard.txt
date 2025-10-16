@@ -1,0 +1,18 @@
+1: (6, 6) @ (1, 0) heading East
+2: (3, 6) @ (3, 0) heading North
+3: (2, 2) @ (4, 0) heading North
+4: (0, 5) @ (0, 1) heading West
+5: (0, 0) @ (2, 1) heading North
+6: (0, 1) @ (1, 2) heading South
+7: (0, 2) @ (3, 2) heading East
+8: (1, 4) @ (2, 3) heading South
+9: (2, 3) @ (4, 4) heading South
+10: (3, 4) @ (2, 5) heading West
+
+Board:
+ 6662
+50032
+ 0002
+ 11  
+  4 2
+  433

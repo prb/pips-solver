@@ -1,0 +1,22 @@
+// id 77 (medium) - Rodolfo Kurchan
+board:
+   ##  
+   ##  
+   ##  
+#  ##  
+#  ####
+## ####
+
+pieces:
+00,02,03,04,05,13,14,23,33,44
+
+constraints:
+Exactly 5 {(3,1),(3,2)}
+Exactly 6 {(4,1),(4,2)}
+MoreThan 7 {(0,3),(0,4)}
+Exactly 3 {(3,3),(4,3),(3,4),(4,4),(4,5)}
+Exactly 2 {(5,4)}
+Exactly 0 {(6,4),(6,5)}
+Exactly 4 {(3,5)}
+Exactly 1 {(5,5)}
+

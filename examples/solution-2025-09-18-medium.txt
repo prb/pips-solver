@@ -1,0 +1,12 @@
+1: (0, 3) @ (0, 0) heading South
+2: (4, 5) @ (1, 0) heading South
+3: (2, 4) @ (2, 1) heading West
+4: (0, 5) @ (0, 2) heading East
+5: (2, 6) @ (2, 2) heading West
+6: (0, 2) @ (2, 3) heading East
+
+Board:
+04  
+3542
+0562
+  02

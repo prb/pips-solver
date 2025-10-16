@@ -1,0 +1,19 @@
+// id 142 (medium) - Rodolfo Kurchan
+board:
+   # 
+ ####
+#####
+#####
+  #  
+
+pieces:
+52,02,30,04,60,33,01,54
+
+constraints:
+AllSame None {(3,0),(3,1)}
+MoreThan 4 {(1,1)}
+AllSame None {(2,1),(2,2),(1,3),(2,3),(3,3)}
+Exactly 4 {(0,2),(0,3)}
+AllSame None {(3,2),(4,2)}
+LessThan 3 {(4,3)}
+

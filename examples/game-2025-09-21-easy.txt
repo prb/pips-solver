@@ -1,0 +1,19 @@
+// id 47 (easy) - Rodolfo Kurchan
+board:
+  #  
+#####
+#####
+  #  
+
+pieces:
+01,21,13,63,43,00
+
+constraints:
+Exactly 2 {(1,1),(2,1)}
+Exactly 0 {(3,1),(4,1)}
+Exactly 4 {(0,2)}
+Exactly 5 {(1,2),(2,2)}
+Exactly 3 {(3,2)}
+Exactly 1 {(4,2)}
+Exactly 6 {(2,3)}
+

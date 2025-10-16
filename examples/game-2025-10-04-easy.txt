@@ -1,0 +1,16 @@
+// id 63 (easy) - Rodolfo Kurchan
+board:
+#   
+#   
+#   
+#   
+####
+
+pieces:
+34,16,63,44
+
+constraints:
+Exactly 8 {(0,1),(0,2)}
+Exactly 9 {(0,3),(0,4)}
+Exactly 7 {(1,4),(2,4)}
+

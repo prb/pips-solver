@@ -1,0 +1,16 @@
+1: (2, 6) @ (0, 0) heading East
+2: (0, 1) @ (4, 0) heading East
+3: (5, 6) @ (0, 1) heading East
+4: (1, 6) @ (4, 1) heading West
+5: (4, 6) @ (0, 2) heading East
+6: (6, 6) @ (2, 2) heading East
+7: (0, 6) @ (4, 2) heading West
+8: (3, 4) @ (0, 3) heading West
+9: (5, 5) @ (2, 3) heading East
+10: (0, 3) @ (4, 3) heading West
+
+Board:
+26  01
+56  61
+466660
+435530

@@ -1,0 +1,9 @@
+1: (0, 0) @ (0, 0) heading East
+2: (1, 3) @ (2, 0) heading South
+3: (3, 3) @ (0, 1) heading East
+4: (0, 4) @ (0, 2) heading East
+
+Board:
+001
+333
+04 
