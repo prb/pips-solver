@@ -55,7 +55,34 @@ impl Game {
         self.board.is_empty() && self.pieces.is_empty() && self.constraints.is_empty()
     }
 
-    pub fn top_left_point(&self) -> Option<Point> {
+    pub fn pivot_point(&self) -> Option<Point> {
+        let board_points = self.board.points();
+
+        if let Some((point, _size)) = self
+            .constraints
+            .iter()
+            .filter_map(|constraint| {
+                let points = constraint.points();
+                if points.is_empty() {
+                    None
+                } else {
+                    let mut sorted: Vec<Point> = points
+                        .iter()
+                        .copied()
+                        .filter(|p| board_points.contains(p))
+                        .collect();
+                    if sorted.is_empty() {
+                        return None;
+                    }
+                    sorted.sort_by_key(|p| (p.y, p.x));
+                    Some((sorted[0], points.len()))
+                }
+            })
+            .min_by_key(|&(point, size)| (size, point.x, point.y))
+        {
+            return Some(point);
+        }
+
         self.board
             .points()
             .iter()

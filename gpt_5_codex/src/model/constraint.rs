@@ -286,8 +286,8 @@ impl Constraint {
     }
 
     pub fn reduce_placement(&self, placement: &Placement) -> Result<Option<Constraint>, String> {
-        placement
-            .assignments()
+        let assignments = placement.assignments();
+        assignments
             .iter()
             .try_fold(Some(self.clone()), |current, assignment| match current {
                 None => Ok(None),

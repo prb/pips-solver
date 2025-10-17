@@ -1,4 +1,4 @@
-use crate::model::{Direction, Game, Piece, Placement, reduce_constraints, remove_one};
+use crate::model::{Direction, Game, Piece, Placement, Point, reduce_constraints, remove_one};
 use std::rc::Rc;
 
 pub fn solve(game: &Game) -> Result<Vec<Placement>, String> {
@@ -11,23 +11,25 @@ fn backtrack(game: &Game, path: Rc<Path>) -> Result<Rc<Path>, String> {
         return Ok(path);
     }
     let pivot = game
-        .top_left_point()
+        .pivot_point()
         .ok_or_else(|| "No valid placements.".to_string())?;
     let unique_pieces = game.unique_pieces();
     for piece in unique_pieces {
         for &direction in directions_for_piece(&piece) {
-            let placement = Placement::new(piece.clone(), pivot, direction);
-            match play(game, &placement) {
-                Ok(next) => {
-                    let next_path = Rc::new(Path::Node {
-                        placement,
-                        prev: Rc::clone(&path),
-                    });
-                    if let Ok(solution) = backtrack(&next, next_path) {
-                        return Ok(solution);
+            for anchor in anchors_for_direction(pivot, direction) {
+                let placement = Placement::new(piece.clone(), anchor, direction);
+                match play(game, &placement) {
+                    Ok(next) => {
+                        let next_path = Rc::new(Path::Node {
+                            placement,
+                            prev: Rc::clone(&path),
+                        });
+                        if let Ok(solution) = backtrack(&next, next_path) {
+                            return Ok(solution);
+                        }
                     }
+                    Err(_) => continue,
                 }
-                Err(_) => continue,
             }
         }
     }
@@ -35,7 +37,8 @@ fn backtrack(game: &Game, path: Rc<Path>) -> Result<Rc<Path>, String> {
 }
 
 fn play(game: &Game, placement: &Placement) -> Result<Game, String> {
-    let board_result = game.board.remove_points(&placement.points());
+    let placement_points = placement.points();
+    let board_result = game.board.remove_points(&placement_points);
     let pieces_result = remove_one(game.pieces.clone(), &placement.piece);
     let constraints_result = reduce_constraints(&game.constraints, placement);
 
@@ -51,6 +54,38 @@ fn directions_for_piece(piece: &Piece) -> &'static [Direction] {
     } else {
         &ALL_DIRECTIONS
     }
+}
+
+fn anchors_for_direction(pivot: Point, direction: Direction) -> Vec<Point> {
+    let mut anchors = Vec::with_capacity(2);
+    let mut push_unique = |opt: Option<Point>| {
+        if let Some(point) = opt {
+            if !anchors.contains(&point) {
+                anchors.push(point);
+            }
+        }
+    };
+
+    match direction {
+        Direction::North => {
+            push_unique(pivot.y.checked_sub(1).map(|y| Point::new(pivot.x, y)));
+            push_unique(Some(pivot));
+        }
+        Direction::East => {
+            push_unique(Some(pivot));
+            push_unique(pivot.x.checked_sub(1).map(|x| Point::new(x, pivot.y)));
+        }
+        Direction::South => {
+            push_unique(Some(pivot));
+            push_unique(pivot.y.checked_sub(1).map(|y| Point::new(pivot.x, y)));
+        }
+        Direction::West => {
+            push_unique(Some(pivot));
+            push_unique(pivot.x.checked_sub(1).map(|x| Point::new(x, pivot.y)));
+        }
+    }
+
+    anchors
 }
 
 const ALL_DIRECTIONS: [Direction; 4] = [

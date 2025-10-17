@@ -1,16 +1,19 @@
 use super::point::Point;
 use once_cell::sync::Lazy;
 use std::collections::HashSet;
+use std::sync::Arc;
 
 /// Represents the playable board as a set of points.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Board {
-    points: HashSet<Point>,
+    points: Arc<HashSet<Point>>,
 }
 
 impl Board {
     pub fn new(points: HashSet<Point>) -> Self {
-        Self { points }
+        Self {
+            points: Arc::new(points),
+        }
     }
 
     pub fn points(&self) -> &HashSet<Point> {
@@ -25,19 +28,20 @@ impl Board {
         self.points.is_empty()
     }
 
-    pub fn contains_all(&self, other: &HashSet<Point>) -> bool {
+    pub fn contains_all(&self, other: &[Point]) -> bool {
         other.iter().all(|point| self.points.contains(point))
     }
 
-    pub fn remove_points(&self, to_remove: &HashSet<Point>) -> Result<Board, String> {
+    pub fn remove_points(&self, to_remove: &[Point]) -> Result<Self, String> {
         if !self.contains_all(to_remove) {
             return Err("Placement has at least one point outside of the board.".to_string());
         }
-        let mut next = self.points.clone();
+        let mut next = Arc::clone(&self.points);
+        let next_points = Arc::make_mut(&mut next);
         for point in to_remove {
-            next.remove(point);
+            next_points.remove(point);
         }
-        Ok(Board::new(next))
+        Ok(Board { points: next })
     }
 }
 
@@ -62,8 +66,7 @@ mod tests {
         pts.insert(Point::new(0, 1));
         let board = Board::new(pts.clone());
 
-        let mut take = HashSet::new();
-        take.insert(Point::new(0, 1));
+        let take = [Point::new(0, 1)];
         let next = board.remove_points(&take).unwrap();
         assert_eq!(next.len(), 1);
         assert!(next.points().contains(&Point::new(0, 0)));
@@ -72,8 +75,7 @@ mod tests {
     #[test]
     fn remove_points_errors_for_non_subset() {
         let board = Board::default();
-        let mut take = HashSet::new();
-        take.insert(Point::new(0, 0));
+        let take = [Point::new(0, 0)];
         assert!(board.remove_points(&take).is_err());
     }
 }

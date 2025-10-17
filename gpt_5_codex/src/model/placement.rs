@@ -1,5 +1,4 @@
 use super::{assignment::Assignment, direction::Direction, piece::Piece, point::Point};
-use std::collections::HashSet;
 use std::fmt;
 
 /// Places a piece at a point using a specific direction.
@@ -19,34 +18,32 @@ impl Placement {
         }
     }
 
-    pub fn assignments(&self) -> Vec<Assignment> {
+    pub fn assignments(&self) -> [Assignment; 2] {
         let a = self.piece.left();
         let b = self.piece.right();
         match self.direction {
-            Direction::North => vec![
+            Direction::North => [
                 Assignment::new(a, Point::new(self.point.x, self.point.y + 1)),
                 Assignment::new(b, self.point),
             ],
-            Direction::East => vec![
+            Direction::East => [
                 Assignment::new(a, self.point),
                 Assignment::new(b, Point::new(self.point.x + 1, self.point.y)),
             ],
-            Direction::South => vec![
+            Direction::South => [
                 Assignment::new(a, self.point),
                 Assignment::new(b, Point::new(self.point.x, self.point.y + 1)),
             ],
-            Direction::West => vec![
+            Direction::West => [
                 Assignment::new(a, Point::new(self.point.x + 1, self.point.y)),
                 Assignment::new(b, self.point),
             ],
         }
     }
 
-    pub fn points(&self) -> HashSet<Point> {
-        self.assignments()
-            .into_iter()
-            .map(|assignment| assignment.point)
-            .collect()
+    pub fn points(&self) -> [Point; 2] {
+        let assignments = self.assignments();
+        [assignments[0].point, assignments[1].point]
     }
 }
 
