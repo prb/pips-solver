@@ -317,8 +317,8 @@ impl Constraint {
         let assignments = placement.assignments();
         let mut current = self.clone();
 
-        for assignment in assignments {
-            current = current.reduce_a(&assignment)?;
+        for assignment in &assignments {
+            current = current.reduce_a(assignment)?;
         }
 
         Ok(current)

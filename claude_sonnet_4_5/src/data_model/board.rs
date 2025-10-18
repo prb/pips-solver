@@ -3,15 +3,18 @@
 use super::placement::Placement;
 use super::point::Point;
 use std::collections::HashSet;
+use std::sync::Arc;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Board {
-    points: HashSet<Point>,
+    points: Arc<HashSet<Point>>,
 }
 
 impl Board {
     pub fn new(points: HashSet<Point>) -> Self {
-        Board { points }
+        Board {
+            points: Arc::new(points),
+        }
     }
 
     // pub fn empty() -> Self {
@@ -33,20 +36,21 @@ impl Board {
         let placement_points = placement.points();
 
         // Check if all placement points are in the board
-        if !placement_points.is_subset(&self.points) {
+        if !placement_points.iter().all(|p| self.points.contains(p)) {
             return Err(format!(
                 "Placement {:?} has at least one point outside of the board.",
                 placement
             ));
         }
 
-        // Remove the placement points from the board
-        let new_points: HashSet<Point> = self
-            .points
-            .difference(&placement_points)
-            .copied()
-            .collect();
+        // Use Arc copy-on-write for efficient cloning
+        let mut new_points = Arc::clone(&self.points);
+        let points_mut = Arc::make_mut(&mut new_points);
 
-        Ok(Board::new(new_points))
+        for point in &placement_points {
+            points_mut.remove(point);
+        }
+
+        Ok(Board { points: new_points })
     }
 }

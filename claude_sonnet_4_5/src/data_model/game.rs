@@ -5,6 +5,7 @@ use super::constraint::{reduce_cs, Constraint};
 use super::piece;
 use super::piece::Piece;
 use super::placement::Placement;
+use super::point::Point;
 use std::collections::HashSet;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -62,6 +63,66 @@ impl Game {
         }
 
         true
+    }
+
+    /// Finds a pivot point for placing the next piece.
+    /// Prioritizes points from the smallest constraint to avoid expensive backtracking.
+    /// Falls back to the top-left point of the board if no constraints exist.
+    pub fn pivot_point(&self) -> Option<Point> {
+        let board_points = self.board.points();
+
+        // Find the smallest constraint's top-left point on the board
+        if let Some((point, _size)) = self
+            .constraints
+            .iter()
+            .filter_map(|constraint| {
+                let points = match constraint {
+                    Constraint::Empty => return None,
+                    Constraint::AllSame { points, .. } => points,
+                    Constraint::AllDifferent { points, .. } => points,
+                    Constraint::LessThan { points, .. } => points,
+                    Constraint::Exactly { points, .. } => points,
+                    Constraint::MoreThan { points, .. } => points,
+                };
+
+                if points.is_empty() {
+                    return None;
+                }
+
+                // Find points that are still on the board
+                let mut sorted: Vec<Point> = points
+                    .iter()
+                    .copied()
+                    .filter(|p| board_points.contains(p))
+                    .collect();
+
+                if sorted.is_empty() {
+                    return None;
+                }
+
+                // Sort by (y, x) to get top-left
+                sorted.sort_by_key(|p| (p.y, p.x));
+                Some((sorted[0], points.len()))
+            })
+            .min_by_key(|&(point, size)| (size, point.x, point.y))
+        {
+            return Some(point);
+        }
+
+        // Fall back to board's top-left point
+        board_points.iter().min_by_key(|p| (p.y, p.x)).copied()
+    }
+
+    /// Gets unique pieces from the piece list, preserving order
+    pub fn unique_pieces(&self) -> Vec<Piece> {
+        let mut seen = HashSet::new();
+        let mut unique = Vec::new();
+        for &piece in &self.pieces {
+            if seen.insert(piece) {
+                unique.push(piece);
+            }
+        }
+        unique
     }
 
     /// Applies a placement to the game, returning a new game state (play from spec)
