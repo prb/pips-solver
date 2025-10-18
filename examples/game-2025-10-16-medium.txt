@@ -1,0 +1,16 @@
+// id 28 (medium) - Rodolfo Kurchan
+board:
+#### 
+#  ##
+#####
+ ####
+
+pieces:
+54,12,23,52,66,65,31,11
+
+constraints:
+AllSame None {(0,0),(1,0),(2,0),(0,1)}
+Exactly 21 {(3,0),(3,1),(4,1),(4,2)}
+Exactly 6 {(0,2),(1,2),(2,2)}
+AllSame None {(2,3),(3,3),(4,3)}
+

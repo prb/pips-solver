@@ -1,0 +1,10 @@
+1: (6, 6) @ (3, 1) heading North
+2: (0, 4) @ (2, 1) heading South
+3: (2, 6) @ (1, 0) heading West
+4: (4, 6) @ (1, 1) heading North
+5: (4, 5) @ (0, 1) heading North
+
+Board:
+ 62 
+5606
+4446

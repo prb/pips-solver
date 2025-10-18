@@ -1,0 +1,21 @@
+// id 79 (medium) - Rodolfo Kurchan
+board:
+ ##   
+##    
+      
+  ####
+  ####
+####  
+####  
+
+pieces:
+56,31,11,45,04,24,05,25,30,62
+
+constraints:
+Exactly 5 {(1,0),(1,1)}
+LessThan 2 {(2,0)}
+Exactly 0 {(2,3),(2,4)}
+AllSame None {(3,3),(4,3),(5,3)}
+AllSame None {(3,4),(4,4),(2,5),(3,5)}
+LessThan 5 {(0,6),(1,6),(2,6),(3,6)}
+

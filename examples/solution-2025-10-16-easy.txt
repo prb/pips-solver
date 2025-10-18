@@ -1,0 +1,14 @@
+1: (0, 4) @ (0, 4) heading East
+2: (2, 6) @ (0, 0) heading West
+3: (1, 6) @ (0, 1) heading South
+4: (5, 6) @ (1, 2) heading West
+5: (3, 4) @ (2, 0) heading West
+6: (5, 5) @ (3, 2) heading North
+7: (4, 5) @ (2, 4) heading East
+
+Board:
+6243
+1   
+6655
+   5
+0445
