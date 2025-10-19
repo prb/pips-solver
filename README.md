@@ -1,5 +1,5 @@
 # Pips Solver
-Human-specified, AI-implemented solver for the NY Times Pips game.  The specification is in [strategy.md](strategy.md), and I'm experimenting with different AI models and what it's like to work with them.  I used the [Zed](https://zed.dev) editor for authoring.
+Human-specified, AI-implemented solver for the NY Times Pips game.  The specification is in [strategy.md](strategy.md), and my primary objective was to experiment with different AI models/agents and what it's like to work with them.  I used the [Zed](https://zed.dev) editor for authoring.
 
 My favorite puzzle is 2025-10-15 "hard":
 
@@ -14,6 +14,19 @@ My favorite puzzle is 2025-10-15 "hard":
  630  2
  6    3
  2   33
+```
+
+The most interesting puzzles from a troubleshooting standpoint were the 2025-09-15 "hard" (due to the large single constraint) and the 2025-10-14 "hard" (due to the number and complexity of constraints).
+
+Here's a coarse histogram of solver performance (Gemini benchmarking its implementation):
+
+```
+Execution Time Histogram:
+ 1 .1 sec    : 355
+ 2 1 sec     : 8
+ 3 10 sec    : 2
+ 4 100 sec   : 1
+ 5 >100 sec  : 0
 ```
 
 ## Gemini 2.5 Pro
@@ -46,7 +59,7 @@ Board:
 And I got Codex to write a converter from the NYTimes JSON format to the textual format used in this project.
 
 ## Wrap Up
-I asked each of the models to compare/contrast the code from all three models, and Claude did a decent job of summarizing:
+I asked each of the models to compare/contrast the code from all three models after the initial round, and Claude did a decent job of summarizing:
 
 > Summary
 > - Codex: Verbose and explicit with extensive helpers and validation
@@ -54,7 +67,9 @@ I asked each of the models to compare/contrast the code from all three models, a
 > - Gemini: Minimal functional style with compact representations
 > All three are correct implementations with similar algorithmic approaches but different stylistic choices and ownership strategies.  Codex is the most "enterprisey" with extensive validation and helpers, Claude takes a balanced OOP approach, and Gemini favors minimalism and functional patterns.
 
-None of the models did some of the things that I would have expected them to do without additional prompting and review, e.g., use persistent data structures for the recursion.
+None of the models did some of the things that I would have expected them to do without additional prompting and review, e.g., use persistent data structures for the recursion.  None of the models proposed an obvious(?) performance improvement presented by the 2025-09-15 "hard" game, which was to optimize the pivot point selection based on the size of the remaining constraints.  They all did a fine job of implementing these improvements once I pointed them out.  The persistent data structure improvement is probably an instance of operator error/ignorance, in that I *could* have supplied that as part of the prompt/specification if I'd better understood the level of flexibility around mutable data structures in Rust.  The point selection optimization is a more interesting question.  None of the AIs thought "outside the box" in this way.
+
+Both of those improvements (especially the code/implementation style one) are good candidates to fold back into an improved specification.
 
 ## Cost Considerations
 On my first pass using Gemini from Zed, I provisioned an API key in Google Cloud, assigned it to the non-free tier, and that resulted in a cost of around $35 for the work.  That's great compared to the cost of human labor, but it's nearly double the monthly $20 subscription costs for either Claude or Codex.  For the second pass using Gemini from the commandline, I authenticated to Google and used the Gemini subscription from my Google account.
