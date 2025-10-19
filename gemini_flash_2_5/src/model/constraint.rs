@@ -59,6 +59,16 @@ impl Constraint {
         Ok(Constraint::MoreThan(value, points))
     }
 
+    pub fn points(&self) -> &HashSet<Point> {
+        match self {
+            Constraint::AllSame(_, p) => p,
+            Constraint::AllDifferent(_, p) => p,
+            Constraint::LessThan(_, p) => p,
+            Constraint::Exactly(_, p) => p,
+            Constraint::MoreThan(_, p) => p,
+        }
+    }
+
     pub fn reduce_a(self, assignment: &Assignment) -> Result<Option<Constraint>, String> {
         let Assignment(pips, point) = *assignment;
 

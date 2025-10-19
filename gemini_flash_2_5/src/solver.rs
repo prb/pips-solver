@@ -3,6 +3,7 @@ use crate::model::constraint::Constraint;
 use crate::model::game::Game;
 use crate::model::piece::{self, Piece};
 use crate::model::placement::Placement;
+use crate::model::point::Point;
 use std::collections::HashSet;
 use std::rc::Rc;
 
@@ -38,8 +39,8 @@ fn solve_recursive(game: &Game, path: Rc<Path>) -> Result<Rc<Path>, String> {
         return Ok(path);
     }
 
-    let b0 = match game.board.points().iter().min() {
-        Some(p) => *p,
+    let pivot = match game.pivot_point() {
+        Some(p) => p,
         None => return Err("Board is empty, but game is not won".to_string()),
     };
 
@@ -58,16 +59,18 @@ fn solve_recursive(game: &Game, path: Rc<Path>) -> Result<Rc<Path>, String> {
                 continue;
             }
 
-            let placement = Placement {
-                piece,
-                point: b0,
-                direction: *direction,
-            };
+            for anchor in anchors_for_direction(pivot, *direction) {
+                let placement = Placement {
+                    piece,
+                    point: anchor,
+                    direction: *direction,
+                };
 
-            if let Ok(new_game) = play(game, &placement) {
-                let new_path = Rc::new(Path::Node(placement, Rc::clone(&path)));
-                if let Ok(solution) = solve_recursive(&new_game, new_path) {
-                    return Ok(solution);
+                if let Ok(new_game) = play(game, &placement) {
+                    let new_path = Rc::new(Path::Node(placement, Rc::clone(&path)));
+                    if let Ok(solution) = solve_recursive(&new_game, new_path) {
+                        return Ok(solution);
+                    }
                 }
             }
         }
@@ -120,4 +123,36 @@ fn reduce_p(constraint: &Constraint, placement: &Placement) -> Result<Option<Con
         }
     }
     Ok(current_constraint)
+}
+
+fn anchors_for_direction(pivot: Point, direction: Direction) -> Vec<Point> {
+    let mut anchors = Vec::with_capacity(2);
+    let mut push_unique = |opt: Option<Point>| {
+        if let Some(point) = opt {
+            if !anchors.contains(&point) {
+                anchors.push(point);
+            }
+        }
+    };
+
+    match direction {
+        Direction::North => {
+            push_unique(pivot.1.checked_sub(1).map(|y| Point(pivot.0, y)));
+            push_unique(Some(pivot));
+        }
+        Direction::East => {
+            push_unique(Some(pivot));
+            push_unique(pivot.0.checked_sub(1).map(|x| Point(x, pivot.1)));
+        }
+        Direction::South => {
+            push_unique(Some(pivot));
+            push_unique(pivot.1.checked_sub(1).map(|y| Point(pivot.0, y)));
+        }
+        Direction::West => {
+            push_unique(Some(pivot));
+            push_unique(pivot.0.checked_sub(1).map(|x| Point(x, pivot.1)));
+        }
+    }
+
+    anchors
 }

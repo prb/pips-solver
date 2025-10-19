@@ -1,6 +1,7 @@
 use crate::model::board::Board;
 use crate::model::constraint::Constraint;
 use crate::model::piece::Piece;
+use crate::model::point::Point;
 use std::collections::HashSet;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -42,6 +43,15 @@ impl Game {
 
     pub fn is_won(&self) -> bool {
         self.board.points().is_empty() && self.pieces.is_empty() && self.constraints.is_empty()
+    }
+
+    pub fn pivot_point(&self) -> Option<Point> {
+        if let Some(constraint) = self.constraints.iter().min_by_key(|c| c.points().len()) {
+            if let Some(point) = constraint.points().iter().min() {
+                return Some(*point);
+            }
+        }
+        self.board.points().iter().min().copied()
     }
 }
 
