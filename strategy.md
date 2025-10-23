@@ -13,23 +13,25 @@ The game involves placing a list of dominos onto a pre-defined game board in a n
 - Load a game from a simple textual representation in a file, solve it, and output the solution to standard output.
 
 # Program Structure
-The project provides two executables:
+The project provides three executables:
 
 - `pips-solver <path-to-game-file>` which accepts a file path containing a textual puzzle description, solves it, and prints the placements along with a rendered board.
 - `solve-pips <YYYY-MM-DD> <easy|medium|hard|all>` which fetches the NYTimes puzzle for the specified date, solves one or more difficulties, and prints placements plus a rendered board for each requested difficulty.
+- `count-solutions <YYYY-MM-DD> <easy|medium|hard|all>` which fetches the NYTimes puzzle for the specified date and reports how many solutions exist for the requested difficulty (or all difficulties).
 
 The data model, game loader, and solver should all be in separate submodules.  For the data model, each struct should be defined in its own module.
 
 Unit tests should be written for each of the components based on the examples in this specification document.
 
-## NYTimes Fetch CLI
-The `solve-pips` binary augments the solver by pulling puzzles directly from the NYTimes service.
+## NYTimes Fetch CLIs
+The `solve-pips` and `count-solutions` binaries augment the solver by pulling puzzles directly from the NYTimes service.
 
-- The `<YYYY-MM-DD>` date argument is parsed using the `%Y-%m-%d` format; the command rejects future dates before attempting a fetch.
-- The difficulty argument accepts `easy`, `medium`, `hard`, or `all`. When `all` is specified, the solver iterates in the order Easy, Medium, Hard, printing a banner before each solve.
-- Puzzle data is fetched from `https://www.nytimes.com/svc/pips/v1/<YYYY-MM-DD>.json` by default. If the `NYT_PIPS_JSON_DIR` environment variable is set, the CLI reads `game-<date>.json` from that directory instead. The `NYT_PIPS_BASE_URL` variable provides an alternate base URL or filesystem path when needed (tests, mirroring, etc.).
+- The `<YYYY-MM-DD>` date argument is parsed using the `%Y-%m-%d` format; each command rejects future dates before attempting a fetch.
+- The difficulty argument accepts `easy`, `medium`, `hard`, or `all`. When `all` is specified, the solver iterates in the order Easy, Medium, Hard, printing a banner before each run.
+- Puzzle data is fetched from `https://www.nytimes.com/svc/pips/v1/<YYYY-MM-DD>.json` by default. If the `NYT_PIPS_JSON_DIR` environment variable is set, the CLIs read `game-<date>.json` from that directory instead. The `NYT_PIPS_BASE_URL` variable provides an alternate base URL or filesystem path when needed (tests, mirroring, etc.).
 - Fetch, parse, and load errors produce descriptive user-facing messages and terminate the command.
-- For each solved difficulty, the CLI prints numbered placements starting at 1 followed by a `Board:` section mirroring the file-based solver output.
+- For each solved difficulty, `solve-pips` prints numbered placements starting at 1 followed by a `Board:` section mirroring the file-based solver output.
+- `count-solutions` prints a summary banner and the total number of solutions for each requested difficulty using a single-threaded exhaustive search.
 
 # Data Model
 The fundamental idea for the data model is to treat the board as a two-dimensional grid with non-negative integer coordinates.
