@@ -77,7 +77,7 @@ On my first pass using Gemini from Zed, I provisioned an API key in Google Cloud
 ## Acknowledgments / References
 Discovering and reviewing the code for another Pips solving project, [pips](https://github.com/ematth/pips), I discovered that a JSON representation of the games is downloadable from the NY Times API; this helped to bulk up the set of examples.  The 2025-09-15 "hard" game is the most interesting because of the large `Exactly` constraint.
 
-There's a [cool approach](https://www.righto.com/2025/10/solve-nyt-pips-with-constraints.html) using a constraint solver from Ken Shirriff, too.
+There's a [cool approach](https://www.righto.com/2025/10/solve-nyt-pips-with-constraints.html) using a constraint solver from Ken Shirriff, too, and this [F# implementation](https://github.com/brianberns/Pips) that has a slick output style.
 
 ## Future
 Things that I might tinker with further could include parallelization with Rayon or similar, trying out AlgorithmX/Dancing Links, prettier output, and accepting a screenshot of a game as input.
