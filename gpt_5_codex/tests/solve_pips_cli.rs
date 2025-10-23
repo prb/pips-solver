@@ -33,8 +33,18 @@ fn solve_pips_uses_local_fixture_directory() {
         stdout
     );
     assert!(
-        stdout.contains("Board:"),
-        "stdout missing board output:\n{}",
+        stdout.contains("Dominoes:"),
+        "stdout missing domino listing:\n{}",
+        stdout
+    );
+    assert!(
+        stdout.contains("Found a solution"),
+        "stdout missing solve timing line:\n{}",
+        stdout
+    );
+    assert!(
+        stdout.contains('┌'),
+        "stdout missing ASCII board framing:\n{}",
         stdout
     );
 }

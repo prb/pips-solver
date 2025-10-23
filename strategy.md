@@ -30,8 +30,11 @@ The `solve-pips` and `count-solutions` binaries augment the solver by pulling pu
 - The difficulty argument accepts `easy`, `medium`, `hard`, or `all`. When `all` is specified, the solver iterates in the order Easy, Medium, Hard, printing a banner before each run.
 - Puzzle data is fetched from `https://www.nytimes.com/svc/pips/v1/<YYYY-MM-DD>.json` by default. If the `NYT_PIPS_JSON_DIR` environment variable is set, the CLIs read `game-<date>.json` from that directory instead. The `NYT_PIPS_BASE_URL` variable provides an alternate base URL or filesystem path when needed (tests, mirroring, etc.).
 - Fetch, parse, and load errors produce descriptive user-facing messages and terminate the command.
-- For each solved difficulty, `solve-pips` prints numbered placements starting at 1 followed by a `Board:` section mirroring the file-based solver output.
+- For each solved difficulty, `solve-pips` prints the constraint board in its stylized ASCII-art form, lists the domino inventory, enumerates the placements, and then renders the solved board with the placed digits.
 - `count-solutions` prints a summary banner and the total number of solutions for each requested difficulty using a single-threaded exhaustive search.
+
+## Output Formatting
+Both `pips-solver` and `solve-pips` render boards using Unicode box-drawing characters. The unsolved view displays constraint targets or symbols (`=`, `≠`, `<N`, `>N`, numeric totals, etc.) inline with the grid; additional cells belonging to the same constraint are marked with `*`. Gaps in the board layout retain their negative space so the outline matches the original puzzle silhouette. After solving, the board is re-rendered with the assigned pip values in each active cell. The CLI output also includes a neatly columnated `Dominoes:` section so players can review the available pieces alongside the board.
 
 # Data Model
 The fundamental idea for the data model is to treat the board as a two-dimensional grid with non-negative integer coordinates.
