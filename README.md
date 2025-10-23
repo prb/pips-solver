@@ -4,16 +4,58 @@ Human-specified, AI-implemented solver for the NY Times Pips game.  The specific
 My favorite puzzle is 2025-10-15 "hard":
 
 ```
-411
-4 3  6
-551  0
-4    0
-2    0
- 520
- 4 1  20
- 630  2
- 6    3
- 2   33
+┌───┬───────┐
+│ 8 │ 2     │
+│   ├───┬───┤       ┌───┐
+│   │   │ 4 │       │>3 │
+├───┴───┤   │       ├───┤
+│10     │   │       │ 0 │
+├───┬───┴───┘       │   │
+│ 4 │               │   │
+├───┤               │   │
+│>1 │               │   │
+└───┼───┬───────┐   └───┘
+    │ 9 │ 2     │
+    │   ├───┬───┤       ┌───┬───┐
+    │   │   │ 1 │       │ = │ 0 │
+    ├───┼───┤   │       │   ├───┘
+    │12 │ 3 │   │       │   │
+    │   ├───┴───┘       ├───┤
+    │   │               │ = │
+    ├───┤           ┌───┘   │
+    │ 2 │           │       │
+    └───┘           └───────┘
+
+Dominoes:
+
+0-0   0-1   0-2   0-3   0-6   1-3   1-4   1-5
+2-3   2-4   2-5   2-6   3-3   4-5   4-6
+```
+
+Which has the solution:
+
+```
+┌───────┬───┐
+│ 4   1 │ 1 │
+├───┬───┤   │       ┌───┐
+│ 4 │   │ 3 │       │ 6 │
+│   ├───┴───┤       │   │
+│ 5 │ 5   1 │       │ 0 │
+├───┼───────┘       ├───┤
+│ 4 │               │ 0 │
+│   │               │   │
+│ 2 │               │ 0 │
+└───┼───────┬───┐   └───┘
+    │ 5   2 │ 0 │
+    ├───┬───┤   │       ┌───────┐
+    │ 4 │   │ 1 │       │ 2   0 │
+    │   ├───┴───┤       ├───┬───┘
+    │ 6 │ 3   0 │       │ 2 │
+    ├───┼───────┘       │   │
+    │ 6 │               │ 3 │
+    │   │           ┌───┴───┤
+    │ 2 │           │ 3   3 │
+    └───┘           └───────┘
 ```
 
 The most interesting puzzles from a troubleshooting standpoint were the 2025-09-15 "hard" (due to the large single constraint) and the 2025-10-14 "hard" (due to the number and complexity of constraints).
@@ -41,22 +83,6 @@ Interestingly, the solver was 4-5x as fast as the Gemini solver once it identifi
 
 ## Codex 5
 I used GPT Codex 5 (at the cost of around 500k total tokens) for another pass, and it also did a great job, including finding some subtle and unsubtle issues with the specification that both Claude and Gemini had missed.  Interestingly, when I asked it to critique the other two implementations, it complained that they correctly implemented the specification in a way that Codex had missed!  (Codex admitted the error once prompted.)  Codex produced well-tested code in the format and style that I requested.  The Codex solver is about twice as fast as the Gemini solver (and thus half as fast as the Claude solver).
-
-Developed last, the Codex solver is the most feature complete and correct.
-
-I did get Codex to add a simple post-solution board display function, e.g.:
-
-```
-Board:
-  44
- 3366526
- 6 454243
-66 255200
-   11  00
-   11  21
-```
-
-And I got Codex to write a converter from the NYTimes JSON format to the textual format used in this project.
 
 ## Wrap Up
 I asked each of the models to compare/contrast the code from all three models after the initial round, and Claude did a decent job of summarizing:
