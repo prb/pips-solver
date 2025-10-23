@@ -1,3 +1,5 @@
+pub mod nyt;
+
 use crate::model::{Board, Constraint, ConstraintSet, Game, Piece, Pips, Point};
 use std::collections::HashSet;
 use std::fs::File;
