@@ -144,4 +144,4 @@ Found a solution in 8.206167ms
     └───┘           └───────┘
 ```
 
-(Be sure to build with the `--release` flag is critical for larger puzzles.)
+(Building with the `--release` flag is critical for larger puzzles.)
