@@ -30,7 +30,8 @@ The `solve-pips` and `count-solutions` binaries augment the solver by pulling pu
 - The difficulty argument accepts `easy`, `medium`, `hard`, or `all`. When `all` is specified, the solver iterates in the order Easy, Medium, Hard, printing a banner before each run.
 - Puzzle data is fetched from `https://www.nytimes.com/svc/pips/v1/<YYYY-MM-DD>.json` by default. If the `NYT_PIPS_JSON_DIR` environment variable is set, the CLIs read `game-<date>.json` from that directory instead. The `NYT_PIPS_BASE_URL` variable provides an alternate base URL or filesystem path when needed (tests, mirroring, etc.).
 - Fetch, parse, and load errors produce descriptive user-facing messages and terminate the command.
-- For each solved difficulty, `solve-pips` prints the constraint board in its stylized ASCII-art form, lists the domino inventory, enumerates the placements, and then renders the solved board with the placed digits.
+- Both `pips-solver` and `solve-pips` accept `--show-game` to include the unsolved board plus domino inventory and `--show-playout` to display the numbered placement list; when omitted, the commands print only the solve banner, timing, and solved board.
+- For each solved difficulty, `solve-pips` prints the constraint board in its stylized ASCII-art form, lists the domino inventory, enumerates the placements, and then renders the solved board with the placed digits when the corresponding flags are supplied.
 - `count-solutions` prints a summary banner and the total number of solutions for each requested difficulty using a single-threaded exhaustive search.
 
 ## Output Formatting
