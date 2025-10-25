@@ -339,13 +339,11 @@ impl fmt::Display for Constraint {
 #[cfg(test)]
 mod tests {
     use super::{Constraint, reduce_constraints};
-    use crate::model::{
-        direction::Direction, piece::Piece, pips::Pips, placement::Placement, point::Point,
-    };
+    use crate::model::{piece::Piece, pips::Pips, placement::Placement, point::Point};
     use std::collections::HashSet;
 
-    fn piece(a: u8, b: u8) -> Piece {
-        Piece::new(Pips::new(a).unwrap(), Pips::new(b).unwrap())
+    fn domino(a: u8, b: u8) -> Piece {
+        Piece::domino(Pips::new(a).unwrap(), Pips::new(b).unwrap())
     }
 
     fn set_of(points: &[Point]) -> HashSet<Point> {
@@ -358,7 +356,9 @@ mod tests {
             expected: Some(Pips::new(3).unwrap()),
             points: set_of(&[Point::new(0, 0)]),
         };
-        let placement = Placement::new(piece(3, 4), Point::new(0, 0), Direction::North);
+        let piece = domino(4, 5);
+        let pip_order = piece.pip_permutations().pop().unwrap();
+        let placement = Placement::new(piece, Point::new(0, 0), 0, pip_order);
         let result = reduce_constraints(&[constraint], &placement);
         assert!(result.is_err());
     }
@@ -369,7 +369,9 @@ mod tests {
             excluded: HashSet::new(),
             points: set_of(&[Point::new(0, 0), Point::new(1, 0)]),
         };
-        let placement = Placement::new(piece(1, 2), Point::new(0, 0), Direction::East);
+        let piece = domino(1, 2);
+        let pip_order = piece.pip_permutations().pop().unwrap();
+        let placement = Placement::new(piece, Point::new(0, 0), 0, pip_order);
         let reduced = reduce_constraints(&[constraint], &placement).unwrap();
         assert!(reduced.is_empty());
     }

@@ -25,8 +25,16 @@ impl Game {
     }
 
     pub fn validate(&self) -> Result<(), String> {
-        if self.board.len() != self.pieces.len() * 2 {
-            return Err("Board must have twice as many points as there are pieces.".to_string());
+        let total_cells: usize = self
+            .pieces
+            .iter()
+            .map(|piece| piece.shape().cell_count())
+            .sum();
+        if self.board.len() != total_cells {
+            return Err(
+                "Board must have the same number of points as the total cells across pieces."
+                    .to_string(),
+            );
         }
 
         let mut seen_points: HashSet<Point> = HashSet::new();
@@ -126,7 +134,7 @@ mod tests {
         let mut points = HashSet::new();
         points.insert(Point::new(0, 0));
         let board = Board::new(points);
-        let piece = Piece::new(Pips::new(0).unwrap(), Pips::new(0).unwrap());
+        let piece = Piece::domino(Pips::new(0).unwrap(), Pips::new(0).unwrap());
         let game = Game::new(board, vec![piece], vec![]);
         assert!(game.validate().is_err());
     }
@@ -138,7 +146,7 @@ mod tests {
         board_points.insert(Point::new(1, 0));
         let board = Board::new(board_points);
 
-        let piece = Piece::new(Pips::new(0).unwrap(), Pips::new(0).unwrap());
+        let piece = Piece::domino(Pips::new(0).unwrap(), Pips::new(0).unwrap());
 
         let mut c_points = HashSet::new();
         c_points.insert(Point::new(0, 0));
@@ -165,7 +173,7 @@ mod tests {
         board_points.insert(Point::new(1, 0));
         let board = Board::new(board_points);
 
-        let piece = Piece::new(Pips::new(0).unwrap(), Pips::new(0).unwrap());
+        let piece = Piece::domino(Pips::new(0).unwrap(), Pips::new(0).unwrap());
 
         let mut c_points = HashSet::new();
         c_points.insert(Point::new(2, 0)); // not on board

@@ -16,7 +16,7 @@ pub use constraint::{Constraint, ConstraintSet, reduce_constraints};
 pub use direction::Direction;
 #[allow(unused_imports)]
 pub use game::{Game, WON_GAME};
-pub use piece::{Piece, remove_one};
+pub use piece::{Piece, PolyShape, remove_one};
 pub use pips::Pips;
 pub use placement::Placement;
 pub use point::Point;

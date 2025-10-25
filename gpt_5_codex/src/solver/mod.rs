@@ -1,4 +1,4 @@
-use crate::model::{Direction, Game, Piece, Placement, Point, reduce_constraints, remove_one};
+use crate::model::{Game, Placement, Point, reduce_constraints, remove_one};
 use std::rc::Rc;
 
 pub fn solve(game: &Game) -> Result<Vec<Placement>, String> {
@@ -21,20 +21,24 @@ fn backtrack(game: &Game, path: Rc<Path>) -> Result<Rc<Path>, String> {
         .ok_or_else(|| "No valid placements.".to_string())?;
     let unique_pieces = game.unique_pieces();
     for piece in unique_pieces {
-        for &direction in directions_for_piece(&piece) {
-            for anchor in anchors_for_direction(pivot, direction) {
-                let placement = Placement::new(piece.clone(), anchor, direction);
-                match play(game, &placement) {
-                    Ok(next) => {
-                        let next_path = Rc::new(Path::Node {
-                            placement,
-                            prev: Rc::clone(&path),
-                        });
-                        if let Ok(solution) = backtrack(&next, next_path) {
-                            return Ok(solution);
+        let permutations = piece.pip_permutations();
+        for (orientation_index, offsets) in piece.orientations().iter().enumerate() {
+            for anchor in anchors_for_orientation(pivot, offsets) {
+                for pip_order in &permutations {
+                    let placement =
+                        Placement::new(piece.clone(), anchor, orientation_index, pip_order.clone());
+                    match play(game, &placement) {
+                        Ok(next) => {
+                            let next_path = Rc::new(Path::Node {
+                                placement,
+                                prev: Rc::clone(&path),
+                            });
+                            if let Ok(solution) = backtrack(&next, next_path) {
+                                return Ok(solution);
+                            }
                         }
+                        Err(_) => continue,
                     }
-                    Err(_) => continue,
                 }
             }
         }
@@ -53,14 +57,18 @@ fn explore(game: &Game, total: &mut usize) -> Result<(), String> {
     };
     let unique_pieces = game.unique_pieces();
     for piece in unique_pieces {
-        for &direction in directions_for_piece(&piece) {
-            for anchor in anchors_for_direction(pivot, direction) {
-                let placement = Placement::new(piece.clone(), anchor, direction);
-                match play(game, &placement) {
-                    Ok(next) => {
-                        explore(&next, total)?;
+        let permutations = piece.pip_permutations();
+        for (orientation_index, offsets) in piece.orientations().iter().enumerate() {
+            for anchor in anchors_for_orientation(pivot, offsets) {
+                for pip_order in &permutations {
+                    let placement =
+                        Placement::new(piece.clone(), anchor, orientation_index, pip_order.clone());
+                    match play(game, &placement) {
+                        Ok(next) => {
+                            explore(&next, total)?;
+                        }
+                        Err(_) => continue,
                     }
-                    Err(_) => continue,
                 }
             }
         }
@@ -80,54 +88,26 @@ fn play(game: &Game, placement: &Placement) -> Result<Game, String> {
     }
 }
 
-fn directions_for_piece(piece: &Piece) -> &'static [Direction] {
-    if piece.is_doubleton() {
-        &DOUBLETON_DIRECTIONS
-    } else {
-        &ALL_DIRECTIONS
-    }
-}
-
-fn anchors_for_direction(pivot: Point, direction: Direction) -> Vec<Point> {
-    let mut anchors = Vec::with_capacity(2);
-    let mut push_unique = |opt: Option<Point>| {
-        if let Some(point) = opt {
-            if !anchors.contains(&point) {
-                anchors.push(point);
+fn anchors_for_orientation(pivot: Point, offsets: &[(i32, i32)]) -> Vec<Point> {
+    let mut anchors = Vec::new();
+    for &(dx, dy) in offsets {
+        if let Some(anchor) = pivot_anchor(pivot, dx, dy) {
+            if !anchors.contains(&anchor) {
+                anchors.push(anchor);
             }
         }
-    };
-
-    match direction {
-        Direction::North => {
-            push_unique(pivot.y.checked_sub(1).map(|y| Point::new(pivot.x, y)));
-            push_unique(Some(pivot));
-        }
-        Direction::East => {
-            push_unique(Some(pivot));
-            push_unique(pivot.x.checked_sub(1).map(|x| Point::new(x, pivot.y)));
-        }
-        Direction::South => {
-            push_unique(Some(pivot));
-            push_unique(pivot.y.checked_sub(1).map(|y| Point::new(pivot.x, y)));
-        }
-        Direction::West => {
-            push_unique(Some(pivot));
-            push_unique(pivot.x.checked_sub(1).map(|x| Point::new(x, pivot.y)));
-        }
     }
-
     anchors
 }
 
-const ALL_DIRECTIONS: [Direction; 4] = [
-    Direction::North,
-    Direction::East,
-    Direction::South,
-    Direction::West,
-];
-
-const DOUBLETON_DIRECTIONS: [Direction; 2] = [Direction::North, Direction::East];
+fn pivot_anchor(pivot: Point, dx: i32, dy: i32) -> Option<Point> {
+    let anchor_x = pivot.x as i32 - dx;
+    let anchor_y = pivot.y as i32 - dy;
+    if anchor_x < 0 || anchor_y < 0 {
+        return None;
+    }
+    Some(Point::new(anchor_x as u32, anchor_y as u32))
+}
 
 enum Path {
     Empty,
@@ -151,7 +131,7 @@ fn path_to_vec(path: &Path) -> Vec<Placement> {
 #[cfg(test)]
 mod tests {
     use super::{count_solutions, solve};
-    use crate::model::{Board, Constraint, Direction, Game, Piece, Pips, Point};
+    use crate::model::{Board, Constraint, Game, Piece, Pips, Point, PolyShape};
     use std::collections::HashSet;
 
     #[test]
@@ -160,12 +140,11 @@ mod tests {
         points.insert(Point::new(0, 0));
         points.insert(Point::new(1, 0));
         let board = Board::new(points);
-        let pieces = vec![Piece::new(Pips::new(1).unwrap(), Pips::new(1).unwrap())];
+        let pieces = vec![Piece::domino(Pips::new(1).unwrap(), Pips::new(1).unwrap())];
         let game = Game::new(board, pieces, vec![]);
         game.validate().unwrap();
         let solution = solve(&game).expect("solution should exist");
         assert_eq!(solution.len(), 1);
-        assert_eq!(solution[0].direction, Direction::East);
     }
 
     #[test]
@@ -174,7 +153,7 @@ mod tests {
         points.insert(Point::new(0, 0));
         points.insert(Point::new(1, 0));
         let board = Board::new(points);
-        let pieces = vec![Piece::new(Pips::new(1).unwrap(), Pips::new(1).unwrap())];
+        let pieces = vec![Piece::domino(Pips::new(1).unwrap(), Pips::new(1).unwrap())];
         let game = Game::new(board, pieces, vec![]);
         game.validate().unwrap();
         let total = count_solutions(&game).expect("count should succeed");
@@ -188,7 +167,7 @@ mod tests {
         points.insert(Point::new(1, 0));
         let board = Board::new(points.clone());
 
-        let pieces = vec![Piece::new(Pips::new(1).unwrap(), Pips::new(2).unwrap())];
+        let pieces = vec![Piece::domino(Pips::new(1).unwrap(), Pips::new(2).unwrap())];
         let mut constraint_points = HashSet::new();
         constraint_points.insert(Point::new(0, 0));
         constraint_points.insert(Point::new(1, 0));
@@ -200,5 +179,27 @@ mod tests {
         game.validate().unwrap();
         let total = count_solutions(&game).expect("count should succeed");
         assert_eq!(total, 0);
+    }
+
+    #[test]
+    fn solves_straight_tri_line() {
+        let mut points = HashSet::new();
+        points.insert(Point::new(0, 0));
+        points.insert(Point::new(1, 0));
+        points.insert(Point::new(2, 0));
+        let board = Board::new(points);
+        let piece = Piece::new(
+            PolyShape::I3,
+            vec![
+                Pips::new(1).unwrap(),
+                Pips::new(1).unwrap(),
+                Pips::new(1).unwrap(),
+            ],
+        )
+        .unwrap();
+        let game = Game::new(board, vec![piece], vec![]);
+        game.validate().unwrap();
+        let solution = solve(&game).expect("solution should exist");
+        assert_eq!(solution.len(), 1);
     }
 }

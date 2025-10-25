@@ -32,12 +32,15 @@ pub fn render_dominoes(pieces: &[Piece]) -> Vec<String> {
     }
     let mut tokens: Vec<String> = pieces
         .iter()
-        .map(|piece| format!("{}-{}", piece.left().value(), piece.right().value()))
+        .map(|piece| {
+            let values: Vec<String> = piece.pips().iter().map(|p| p.value().to_string()).collect();
+            format!("{}:{}", piece.shape().name(), values.join("-"))
+        })
         .collect();
     tokens.sort();
 
-    let per_line = 8usize;
-    let column_width = 6usize;
+    let per_line = 6usize;
+    let column_width = 12usize;
     tokens
         .chunks(per_line)
         .map(|chunk| {

@@ -1,6 +1,6 @@
 pub mod nyt;
 
-use crate::model::{Board, Constraint, ConstraintSet, Game, Piece, Pips, Point};
+use crate::model::{Board, Constraint, ConstraintSet, Game, Piece, Pips, Point, PolyShape};
 use std::collections::HashSet;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
@@ -155,12 +155,26 @@ fn parse_pieces(line: &str) -> Result<Vec<Piece>, String> {
     let mut pieces = Vec::new();
     for token in line.split(',') {
         let trimmed = token.trim();
-        if trimmed.len() != 2 {
-            return Err(format!("Invalid piece token '{}'.", trimmed));
+        if trimmed.is_empty() {
+            continue;
         }
-        let a = parse_digit(trimmed.chars().nth(0).unwrap())?;
-        let b = parse_digit(trimmed.chars().nth(1).unwrap())?;
-        let piece = Piece::new(Pips::new(a)?, Pips::new(b)?);
+        let mut values = Vec::new();
+        for ch in trimmed.chars() {
+            let digit = parse_digit(ch)?;
+            values.push(Pips::new(digit)?);
+        }
+        let piece = match values.len() {
+            2 => Piece::domino(values[0], values[1]),
+            3 => Piece::new(PolyShape::I3, values)?,
+            4 => Piece::new(PolyShape::I4, values)?,
+            5 => Piece::new(PolyShape::I5, values)?,
+            _ => {
+                return Err(format!(
+                    "Invalid piece token '{}'. Pieces must have 2-5 digits.",
+                    trimmed
+                ));
+            }
+        };
         pieces.push(piece);
     }
     Ok(pieces)
