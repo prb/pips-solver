@@ -1,0 +1,10 @@
+board:
+##
+##
+
+pieces:
+2I:01,2I:23
+
+constraints:
+Exactly 1 {(0,0)}
+Exactly 2 {(1,0)}

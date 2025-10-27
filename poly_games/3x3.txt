@@ -1,0 +1,10 @@
+board:
+###
+###
+###
+
+pieces:
+3I:012,3L:345,3L:666
+
+constraints:
+

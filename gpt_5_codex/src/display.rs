@@ -1,7 +1,7 @@
 use crate::model::{
     Game, constraint::Constraint, piece::Piece, placement::Placement, point::Point,
 };
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 const CELL_WIDTH: usize = 3;
 
@@ -34,24 +34,36 @@ pub fn render_dominoes(pieces: &[Piece]) -> Vec<String> {
         .iter()
         .map(|piece| {
             let values: Vec<String> = piece.pips().iter().map(|p| p.value().to_string()).collect();
-            format!("{}:{}", piece.shape().name(), values.join("-"))
+            format!("{}:{}", piece.shape().code(), values.concat())
         })
         .collect();
     tokens.sort();
 
-    let per_line = 6usize;
-    let column_width = 12usize;
-    tokens
-        .chunks(per_line)
-        .map(|chunk| {
-            chunk
-                .iter()
-                .map(|token| format!("{:<width$}", token, width = column_width))
-                .collect::<String>()
-                .trim_end()
-                .to_string()
-        })
-        .collect()
+    const MAX_WIDTH: usize = 80;
+    let mut lines = Vec::new();
+    let mut current = String::new();
+
+    for token in tokens {
+        if current.is_empty() {
+            current.push_str(&token);
+            continue;
+        }
+
+        let projected_len = current.len() + 2 + token.len();
+        if projected_len <= MAX_WIDTH {
+            current.push_str(", ");
+            current.push_str(&token);
+        } else {
+            lines.push(current);
+            current = token;
+        }
+    }
+
+    if !current.is_empty() {
+        lines.push(current);
+    }
+
+    lines
 }
 
 #[derive(Clone)]
@@ -59,29 +71,30 @@ struct CellData {
     point: Point,
     region: usize,
     label: String,
+    constrained: bool,
 }
 
 struct BoardLayout {
     rows: usize,
     cols: usize,
     cells: Vec<Vec<Option<CellData>>>,
+    fill_missing: bool,
+    blend_unconstrained: bool,
 }
 
 impl BoardLayout {
     fn with_constraints(game: &Game) -> Self {
-        let points = game.board.points();
-        if points.is_empty() {
+        if game.board.is_empty() {
             return Self {
                 rows: 0,
                 cols: 0,
                 cells: Vec::new(),
+                fill_missing: true,
+                blend_unconstrained: true,
             };
         }
 
-        let min_x = points.iter().map(|p| p.x).min().unwrap();
-        let max_x = points.iter().map(|p| p.x).max().unwrap();
-        let min_y = points.iter().map(|p| p.y).min().unwrap();
-        let max_y = points.iter().map(|p| p.y).max().unwrap();
+        let (min_x, max_x, min_y, max_y) = game.board.bounds().unwrap();
 
         let rows = (max_y - min_y + 1) as usize;
         let cols = (max_x - min_x + 1) as usize;
@@ -90,9 +103,11 @@ impl BoardLayout {
         let mut region_map = HashMap::new();
         let mut label_points = HashMap::new();
         let mut labels = HashMap::new();
+        let mut constraint_regions = HashSet::new();
 
         for (idx, constraint) in game.constraints.iter().enumerate() {
             let region_id = idx;
+            constraint_regions.insert(region_id);
             let points_in_region = constraint.points();
             if let Some(label_point) = points_in_region
                 .iter()
@@ -108,16 +123,17 @@ impl BoardLayout {
         }
 
         let mut next_region = game.constraints.len();
-        for point in points {
-            let region = *region_map.entry(*point).or_insert_with(|| {
+        for point in game.board.iter() {
+            let region = *region_map.entry(point).or_insert_with(|| {
                 let id = next_region;
                 next_region += 1;
                 id
             });
+            let constrained = constraint_regions.contains(&region);
             let row = (point.y - min_y) as usize;
             let col = (point.x - min_x) as usize;
             let label_text = if let Some(label_point) = label_points.get(&region) {
-                if *label_point == *point {
+                if *label_point == point {
                     labels.get(&region).cloned().unwrap_or_default()
                 } else {
                     String::new()
@@ -127,29 +143,36 @@ impl BoardLayout {
             };
 
             cells[row][col] = Some(CellData {
-                point: *point,
+                point,
                 region,
                 label: label_text,
+                constrained,
             });
         }
 
-        Self { rows, cols, cells }
+        label_unconstrained_regions(&mut cells);
+
+        Self {
+            rows,
+            cols,
+            cells,
+            fill_missing: false,
+            blend_unconstrained: true,
+        }
     }
 
     fn with_dominoes(game: &Game, placements: &[Placement]) -> Self {
-        let points = game.board.points();
-        if points.is_empty() {
+        if game.board.is_empty() {
             return Self {
                 rows: 0,
                 cols: 0,
                 cells: Vec::new(),
+                fill_missing: false,
+                blend_unconstrained: false,
             };
         }
 
-        let min_x = points.iter().map(|p| p.x).min().unwrap();
-        let max_x = points.iter().map(|p| p.x).max().unwrap();
-        let min_y = points.iter().map(|p| p.y).min().unwrap();
-        let max_y = points.iter().map(|p| p.y).max().unwrap();
+        let (min_x, max_x, min_y, max_y) = game.board.bounds().unwrap();
 
         let rows = (max_y - min_y + 1) as usize;
         let cols = (max_x - min_x + 1) as usize;
@@ -163,8 +186,8 @@ impl BoardLayout {
         }
 
         let mut next_region = placements.len();
-        for point in points {
-            let region = *region_map.entry(*point).or_insert_with(|| {
+        for point in game.board.iter() {
+            let region = *region_map.entry(point).or_insert_with(|| {
                 let id = next_region;
                 next_region += 1;
                 id
@@ -173,13 +196,20 @@ impl BoardLayout {
             let col = (point.x - min_x) as usize;
 
             cells[row][col] = Some(CellData {
-                point: *point,
+                point,
                 region,
                 label: String::new(),
+                constrained: false,
             });
         }
 
-        Self { rows, cols, cells }
+        Self {
+            rows,
+            cols,
+            cells,
+            fill_missing: false,
+            blend_unconstrained: false,
+        }
     }
 
     fn render<F>(&self, mut text_fn: F) -> Vec<String>
@@ -198,6 +228,9 @@ impl BoardLayout {
         for row in 0..self.rows {
             for col in 0..self.cols {
                 let Some(cell) = self.cells[row][col].as_ref() else {
+                    if self.fill_missing {
+                        Self::fill_missing_cell(&mut grid, row, col);
+                    }
                     continue;
                 };
                 let base_row = row * 2;
@@ -284,8 +317,18 @@ impl BoardLayout {
         }
         match &self.cells[neighbor_row as usize][neighbor_col as usize] {
             Some(neighbor) if neighbor.region == cell.region => false,
+            Some(neighbor)
+                if self.blend_unconstrained && !cell.constrained && !neighbor.constrained =>
+            {
+                false
+            }
+            None => true,
             _ => true,
         }
+    }
+
+    fn fill_missing_cell(grid: &mut [Vec<char>], row: usize, col: usize) {
+        let _ = (grid, row, col);
     }
 }
 
@@ -357,5 +400,77 @@ fn label_for_constraint(constraint: &Constraint) -> String {
         Constraint::Exactly { target, .. } => target.to_string(),
         Constraint::LessThan { target, .. } => format!("<{}", target),
         Constraint::MoreThan { target, .. } => format!(">{}", target),
+    }
+}
+
+fn label_unconstrained_regions(cells: &mut [Vec<Option<CellData>>]) {
+    if cells.is_empty() || cells[0].is_empty() {
+        return;
+    }
+    let rows = cells.len();
+    let cols = cells[0].len();
+    let mut visited = vec![vec![false; cols]; rows];
+
+    for row in 0..rows {
+        for col in 0..cols {
+            if visited[row][col] {
+                continue;
+            }
+            let Some(cell) = cells[row][col].as_ref() else {
+                continue;
+            };
+            if cell.constrained {
+                visited[row][col] = true;
+                continue;
+            }
+
+            let mut stack = vec![(row, col)];
+            let mut best = (row, col, cell.point);
+
+            while let Some((r, c)) = stack.pop() {
+                if visited[r][c] {
+                    continue;
+                }
+                visited[r][c] = true;
+
+                let Some(current) = cells[r][c].as_ref() else {
+                    continue;
+                };
+                if current.constrained {
+                    continue;
+                }
+                if current.point.y < best.2.y
+                    || (current.point.y == best.2.y && current.point.x < best.2.x)
+                {
+                    best = (r, c, current.point);
+                }
+
+                let neighbors = [
+                    (r.wrapping_sub(1), c, r > 0),
+                    (r + 1, c, r + 1 < rows),
+                    (r, c.wrapping_sub(1), c > 0),
+                    (r, c + 1, c + 1 < cols),
+                ];
+
+                for &(nr, nc, valid) in &neighbors {
+                    if !valid {
+                        continue;
+                    }
+                    if visited[nr][nc] {
+                        continue;
+                    }
+                    match cells[nr][nc].as_ref() {
+                        Some(neighbor) if !neighbor.constrained => stack.push((nr, nc)),
+                        _ => continue,
+                    }
+                }
+            }
+
+            if let Some(cell) = cells[best.0][best.1].as_mut() {
+                if cell.label.is_empty() {
+                    cell.label = "∅".to_string();
+                }
+            }
+        }
     }
 }

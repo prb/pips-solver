@@ -6,6 +6,7 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::path::Path;
 use std::str::FromStr;
+use std::sync::Arc;
 
 pub fn load_game_from_path<P: AsRef<Path>>(path: P) -> Result<Game, String> {
     let file = File::open(path).map_err(|err| err.to_string())?;
@@ -158,26 +159,62 @@ fn parse_pieces(line: &str) -> Result<Vec<Piece>, String> {
         if trimmed.is_empty() {
             continue;
         }
-        let mut values = Vec::new();
-        for ch in trimmed.chars() {
-            let digit = parse_digit(ch)?;
-            values.push(Pips::new(digit)?);
-        }
-        let piece = match values.len() {
-            2 => Piece::domino(values[0], values[1]),
-            3 => Piece::new(PolyShape::I3, values)?,
-            4 => Piece::new(PolyShape::I4, values)?,
-            5 => Piece::new(PolyShape::I5, values)?,
-            _ => {
-                return Err(format!(
-                    "Invalid piece token '{}'. Pieces must have 2-5 digits.",
-                    trimmed
-                ));
-            }
-        };
-        pieces.push(piece);
+        pieces.push(parse_piece_token(trimmed)?);
     }
     Ok(pieces)
+}
+
+pub fn parse_piece_token(token: &str) -> Result<Piece, String> {
+    let token = token.trim();
+    if token.chars().all(|c| c.is_ascii_digit()) {
+        if token.len() != 2 {
+            return Err(format!(
+                "Invalid domino token '{}'. Expected two digits.",
+                token
+            ));
+        }
+        let mut chars = token.chars();
+        let a = parse_digit(chars.next().unwrap())?;
+        let b = parse_digit(chars.next().unwrap())?;
+        return Ok(Piece::domino(Pips::new(a)?, Pips::new(b)?));
+    }
+
+    let (code_part, digits_part) = if let Some(idx) = token.find(':') {
+        (&token[..idx], &token[idx + 1..])
+    } else {
+        let chars: Vec<char> = token.chars().collect();
+        let mut idx = 0;
+        while idx < chars.len() && chars[idx].is_ascii_digit() {
+            idx += 1;
+        }
+        while idx < chars.len() && chars[idx].is_ascii_alphabetic() {
+            idx += 1;
+        }
+        if idx < chars.len() && matches!(chars[idx], '+' | '-') {
+            idx += 1;
+        }
+        (&token[..idx], &token[idx..])
+    };
+
+    let shape = PolyShape::from_code(code_part)
+        .ok_or_else(|| format!("Unsupported shape code '{}'.", code_part.trim()))?;
+
+    let digits: Vec<char> = digits_part.chars().filter(|c| c.is_ascii_digit()).collect();
+    if digits.len() != shape.cell_count() {
+        return Err(format!(
+            "Piece {} requires {} digits, got {} (from '{}').",
+            shape.code(),
+            shape.cell_count(),
+            digits.len(),
+            digits_part
+        ));
+    }
+    let mut values = Vec::with_capacity(digits.len());
+    for ch in digits {
+        let digit = parse_digit(ch)?;
+        values.push(Pips::new(digit)?);
+    }
+    Piece::new(shape, values)
 }
 
 fn parse_constraints(lines: &[String]) -> Result<ConstraintSet, String> {
@@ -198,7 +235,7 @@ fn parse_constraint(line: &str) -> Result<Constraint, String> {
     let points_inner = points_str
         .strip_suffix('}')
         .ok_or_else(|| format!("Constraint '{}' has an unterminated point list.", line))?;
-    let points = parse_points(points_inner)?;
+    let points = Arc::new(parse_points(points_inner)?);
 
     let mut tokens = prefix.trim().split_whitespace();
     let kind = tokens
@@ -219,7 +256,7 @@ fn parse_constraint(line: &str) -> Result<Constraint, String> {
             let arg = tokens
                 .next()
                 .ok_or_else(|| "Missing AllDifferent exclusions.".to_string())?;
-            let excluded = parse_pip_set(arg)?;
+            let excluded = Arc::new(parse_pip_set(arg)?);
             Ok(Constraint::AllDifferent { excluded, points })
         }
         "Exactly" => {

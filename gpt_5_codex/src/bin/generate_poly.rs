@@ -31,11 +31,8 @@ fn run() -> Result<(), String> {
         .pieces
         .iter()
         .map(|piece| {
-            piece
-                .pips()
-                .iter()
-                .map(|p| p.value().to_string())
-                .collect::<String>()
+            let digits: String = piece.pips().iter().map(|p| p.value().to_string()).collect();
+            format!("{}:{}", piece.shape().code(), digits)
         })
         .collect();
     println!("pieces:{}", piece_tokens.join(","));
@@ -96,18 +93,67 @@ fn parse_shapes(value: &str) -> Result<Vec<PolyShape>, String> {
     let mut shapes = Vec::new();
     for token in value.split(',') {
         let trimmed = token.trim();
-        let shape = match trimmed {
-            "2" => PolyShape::Domino,
-            "3" => PolyShape::I3,
-            "4" => PolyShape::I4,
-            "5" => PolyShape::I5,
-            other => return Err(format!("Unknown shape length '{}'.", other)),
-        };
-        if !shapes.contains(&shape) {
-            shapes.push(shape);
+        if trimmed.is_empty() {
+            continue;
+        }
+        if trimmed.chars().all(|c| c.is_ascii_digit()) {
+            match trimmed {
+                "1" => add_shapes(&mut shapes, &[PolyShape::Mono]),
+                "2" => add_shapes(&mut shapes, &[PolyShape::Domino]),
+                "3" => add_shapes(&mut shapes, &[PolyShape::TriI, PolyShape::TriL]),
+                "4" => add_shapes(
+                    &mut shapes,
+                    &[
+                        PolyShape::TetI,
+                        PolyShape::TetLPlus,
+                        PolyShape::TetLMinus,
+                        PolyShape::TetO,
+                        PolyShape::TetSPlus,
+                        PolyShape::TetSMinus,
+                        PolyShape::TetT,
+                    ],
+                ),
+                "5" => add_shapes(
+                    &mut shapes,
+                    &[
+                        PolyShape::PentFPlus,
+                        PolyShape::PentFMinus,
+                        PolyShape::PentI,
+                        PolyShape::PentLPlus,
+                        PolyShape::PentLMinus,
+                        PolyShape::PentPPlus,
+                        PolyShape::PentPMinus,
+                        PolyShape::PentNPlus,
+                        PolyShape::PentNMinus,
+                        PolyShape::PentT,
+                        PolyShape::PentU,
+                        PolyShape::PentV,
+                        PolyShape::PentW,
+                        PolyShape::PentX,
+                        PolyShape::PentYPlus,
+                        PolyShape::PentYMinus,
+                        PolyShape::PentZPlus,
+                        PolyShape::PentZMinus,
+                    ],
+                ),
+                other => return Err(format!("Unknown shape length '{}'.", other)),
+            }
+        } else {
+            let normalized = trimmed.trim_end_matches(':');
+            let shape = PolyShape::from_code(normalized)
+                .ok_or_else(|| format!("Unknown shape code '{}'.", trimmed))?;
+            add_shapes(&mut shapes, &[shape]);
         }
     }
     Ok(shapes)
+}
+
+fn add_shapes(acc: &mut Vec<PolyShape>, shapes: &[PolyShape]) {
+    for shape in shapes {
+        if !acc.contains(shape) {
+            acc.push(*shape);
+        }
+    }
 }
 
 fn usage() -> String {

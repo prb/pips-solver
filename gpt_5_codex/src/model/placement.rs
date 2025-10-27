@@ -64,7 +64,7 @@ mod tests {
 
     #[test]
     fn placement_assignments_cover_all_cells() {
-        let piece = Piece::new(PolyShape::I3, vec![Pips::new(0).unwrap(); 3]).unwrap();
+        let piece = Piece::new(PolyShape::TriI, vec![Pips::new(0).unwrap(); 3]).unwrap();
         let pip_order = piece.pip_permutations().pop().unwrap();
         let placement = Placement::new(piece, Point::new(0, 0), 0, pip_order);
         let assignments = placement.assignments();

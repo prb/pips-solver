@@ -1,4 +1,5 @@
 use crate::model::{Board, Piece, Pips, Placement, Point, PolyShape};
+use crate::util::rng::SimpleRng;
 use std::collections::HashSet;
 
 pub struct GeneratorConfig {
@@ -13,12 +14,7 @@ impl Default for GeneratorConfig {
         Self {
             width: 6,
             height: 6,
-            allowed_shapes: vec![
-                PolyShape::Domino,
-                PolyShape::I3,
-                PolyShape::I4,
-                PolyShape::I5,
-            ],
+            allowed_shapes: all_shapes(),
             seed: None,
         }
     }
@@ -44,7 +40,7 @@ pub fn generate(config: GeneratorConfig) -> Result<GeneratedPuzzle, String> {
     let mut rng = SimpleRng::new(config.seed, config.width as u64, config.height as u64);
 
     let mut allowed = if config.allowed_shapes.is_empty() {
-        vec![PolyShape::Domino]
+        all_shapes()
     } else {
         config.allowed_shapes.clone()
     };
@@ -97,6 +93,39 @@ pub fn generate(config: GeneratorConfig) -> Result<GeneratedPuzzle, String> {
         pieces,
         placements: rendered,
     })
+}
+
+fn all_shapes() -> Vec<PolyShape> {
+    vec![
+        PolyShape::Domino,
+        PolyShape::TriI,
+        PolyShape::TriL,
+        PolyShape::TetI,
+        PolyShape::TetLPlus,
+        PolyShape::TetLMinus,
+        PolyShape::TetO,
+        PolyShape::TetSPlus,
+        PolyShape::TetSMinus,
+        PolyShape::TetT,
+        PolyShape::PentFPlus,
+        PolyShape::PentFMinus,
+        PolyShape::PentI,
+        PolyShape::PentLPlus,
+        PolyShape::PentLMinus,
+        PolyShape::PentPPlus,
+        PolyShape::PentPMinus,
+        PolyShape::PentNPlus,
+        PolyShape::PentNMinus,
+        PolyShape::PentT,
+        PolyShape::PentU,
+        PolyShape::PentV,
+        PolyShape::PentW,
+        PolyShape::PentX,
+        PolyShape::PentYPlus,
+        PolyShape::PentYMinus,
+        PolyShape::PentZPlus,
+        PolyShape::PentZMinus,
+    ]
 }
 
 fn tile_board(
@@ -215,38 +244,4 @@ fn gcd_usize(a: usize, b: usize) -> usize {
         x = temp;
     }
     x
-}
-
-struct SimpleRng {
-    state: u64,
-}
-
-impl SimpleRng {
-    fn new(seed: Option<u64>, width: u64, height: u64) -> Self {
-        let mut state = seed.unwrap_or(0x9e37_79b9_7f4a_7c15 ^ width.wrapping_shl(16) ^ height);
-        if state == 0 {
-            state = 0xfeed_c0de_dead_beef;
-        }
-        Self { state }
-    }
-
-    fn next_u64(&mut self) -> u64 {
-        const A: u64 = 6364136223846793005;
-        const C: u64 = 1;
-        self.state = self.state.wrapping_mul(A).wrapping_add(C);
-        self.state
-    }
-
-    fn gen_range_inclusive(&mut self, min: u8, max: u8) -> u8 {
-        let span = (max - min + 1) as u64;
-        let value = self.next_u64() % span;
-        min + value as u8
-    }
-
-    fn shuffle<T>(&mut self, slice: &mut [T]) {
-        for i in (1..slice.len()).rev() {
-            let j = (self.next_u64() % (i as u64 + 1)) as usize;
-            slice.swap(i, j);
-        }
-    }
 }
