@@ -136,7 +136,7 @@ fn solve_and_print(
             }
             let domino_lines = display::render_dominoes(&game.pieces);
             if !domino_lines.is_empty() {
-                println!("\nPieces:\n");
+                println!("\nDominoes:\n");
                 for line in domino_lines {
                     println!("{}", line);
                 }
