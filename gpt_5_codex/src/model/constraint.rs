@@ -1,28 +1,29 @@
 use super::{assignment::Assignment, pips::Pips, placement::Placement, point::Point};
 use std::collections::HashSet;
 use std::fmt;
+use std::sync::Arc;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum Constraint {
     AllSame {
         expected: Option<Pips>,
-        points: HashSet<Point>,
+        points: Arc<HashSet<Point>>,
     },
     AllDifferent {
-        excluded: HashSet<Pips>,
-        points: HashSet<Point>,
+        excluded: Arc<HashSet<Pips>>,
+        points: Arc<HashSet<Point>>,
     },
     Exactly {
         target: u32,
-        points: HashSet<Point>,
+        points: Arc<HashSet<Point>>,
     },
     LessThan {
         target: u32,
-        points: HashSet<Point>,
+        points: Arc<HashSet<Point>>,
     },
     MoreThan {
         target: u32,
-        points: HashSet<Point>,
+        points: Arc<HashSet<Point>>,
     },
 }
 
@@ -106,7 +107,7 @@ impl Constraint {
             | Constraint::AllDifferent { points, .. }
             | Constraint::Exactly { points, .. }
             | Constraint::LessThan { points, .. }
-            | Constraint::MoreThan { points, .. } => points,
+            | Constraint::MoreThan { points, .. } => points.as_ref(),
         }
     }
 
@@ -119,10 +120,10 @@ impl Constraint {
                 if excluded.contains(&assignment.pips) {
                     return Err(format!("The pip {} is already used.", assignment.pips));
                 }
-                let mut remaining_points = points.clone();
-                remaining_points.remove(&assignment.point);
-                let mut new_excluded = excluded.clone();
-                new_excluded.insert(assignment.pips);
+                let mut remaining_points = Arc::clone(points);
+                Arc::make_mut(&mut remaining_points).remove(&assignment.point);
+                let mut new_excluded = Arc::clone(excluded);
+                Arc::make_mut(&mut new_excluded).insert(assignment.pips);
                 if remaining_points.is_empty() {
                     Ok(None)
                 } else {
@@ -134,8 +135,8 @@ impl Constraint {
             }
             Constraint::AllSame { expected, points } => {
                 let size = points.len();
-                let mut remaining = points.clone();
-                remaining.remove(&assignment.point);
+                let mut remaining = Arc::clone(points);
+                Arc::make_mut(&mut remaining).remove(&assignment.point);
                 match expected {
                     Some(target) => {
                         if assignment.pips != *target {
@@ -178,8 +179,8 @@ impl Constraint {
                 }
             }
             Constraint::Exactly { target, points } => {
-                let mut remaining = points.clone();
-                remaining.remove(&assignment.point);
+                let mut remaining = Arc::clone(points);
+                Arc::make_mut(&mut remaining).remove(&assignment.point);
                 let size = points.len();
                 let pip_value = assignment.pips.value() as u32;
                 if size == 1 {
@@ -214,8 +215,8 @@ impl Constraint {
                 }
             }
             Constraint::LessThan { target, points } => {
-                let mut remaining = points.clone();
-                remaining.remove(&assignment.point);
+                let mut remaining = Arc::clone(points);
+                Arc::make_mut(&mut remaining).remove(&assignment.point);
                 let size = points.len();
                 let pip_value = assignment.pips.value() as u32;
                 if pip_value >= *target {
@@ -242,8 +243,8 @@ impl Constraint {
                 }
             }
             Constraint::MoreThan { target, points } => {
-                let mut remaining = points.clone();
-                remaining.remove(&assignment.point);
+                let mut remaining = Arc::clone(points);
+                Arc::make_mut(&mut remaining).remove(&assignment.point);
                 let size = points.len();
                 let pip_value = assignment.pips.value() as i32;
                 let remaining_points = remaining.len();
@@ -339,17 +340,16 @@ impl fmt::Display for Constraint {
 #[cfg(test)]
 mod tests {
     use super::{Constraint, reduce_constraints};
-    use crate::model::{
-        direction::Direction, piece::Piece, pips::Pips, placement::Placement, point::Point,
-    };
+    use crate::model::{piece::Piece, pips::Pips, placement::Placement, point::Point};
     use std::collections::HashSet;
+    use std::sync::Arc;
 
-    fn piece(a: u8, b: u8) -> Piece {
-        Piece::new(Pips::new(a).unwrap(), Pips::new(b).unwrap())
+    fn domino(a: u8, b: u8) -> Piece {
+        Piece::domino(Pips::new(a).unwrap(), Pips::new(b).unwrap())
     }
 
-    fn set_of(points: &[Point]) -> HashSet<Point> {
-        points.iter().copied().collect()
+    fn set_of(points: &[Point]) -> Arc<HashSet<Point>> {
+        Arc::new(points.iter().copied().collect())
     }
 
     #[test]
@@ -358,7 +358,9 @@ mod tests {
             expected: Some(Pips::new(3).unwrap()),
             points: set_of(&[Point::new(0, 0)]),
         };
-        let placement = Placement::new(piece(3, 4), Point::new(0, 0), Direction::North);
+        let piece = domino(4, 5);
+        let pip_order = piece.pip_permutations().pop().unwrap();
+        let placement = Placement::new(piece, Point::new(0, 0), 0, pip_order);
         let result = reduce_constraints(&[constraint], &placement);
         assert!(result.is_err());
     }
@@ -366,10 +368,12 @@ mod tests {
     #[test]
     fn all_different_consumes_points() {
         let constraint = Constraint::AllDifferent {
-            excluded: HashSet::new(),
+            excluded: Arc::new(HashSet::new()),
             points: set_of(&[Point::new(0, 0), Point::new(1, 0)]),
         };
-        let placement = Placement::new(piece(1, 2), Point::new(0, 0), Direction::East);
+        let piece = domino(1, 2);
+        let pip_order = piece.pip_permutations().pop().unwrap();
+        let placement = Placement::new(piece, Point::new(0, 0), 0, pip_order);
         let reduced = reduce_constraints(&[constraint], &placement).unwrap();
         assert!(reduced.is_empty());
     }

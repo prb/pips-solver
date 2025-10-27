@@ -1,4 +1,4 @@
-use pips_solver::{display, loader, solver};
+use pips_solver::{display, loader, solver, solver_v2};
 use std::env;
 use std::process;
 use std::time::Instant;
@@ -7,6 +7,12 @@ struct CliOptions {
     show_game: bool,
     show_playout: bool,
     path: String,
+    solver: SolverKind,
+}
+
+enum SolverKind {
+    Legacy,
+    V2,
 }
 
 fn main() {
@@ -38,7 +44,10 @@ fn run() -> Result<(), String> {
     }
 
     let started = Instant::now();
-    let placements = solver::solve(&game)?;
+    let placements = match options.solver {
+        SolverKind::Legacy => solver::solve(&game),
+        SolverKind::V2 => solver_v2::solve(&game),
+    }?;
     let elapsed = started.elapsed();
 
     if options.show_playout {
@@ -59,16 +68,21 @@ fn run() -> Result<(), String> {
 }
 
 fn parse_args() -> Result<CliOptions, String> {
+    let mut positional = Vec::new();
     let mut show_game = false;
     let mut show_playout = false;
-    let mut positional = Vec::new();
+    let mut solver = SolverKind::V2;
 
     for arg in env::args().skip(1) {
         match arg.as_str() {
             "--show-game" => show_game = true,
             "--show-playout" => show_playout = true,
             other if other.starts_with("--") => {
-                return Err(format!("Unknown flag '{}'.", other));
+                if let Some(value) = other.strip_prefix("--solver=") {
+                    solver = parse_solver_flag(value)?;
+                } else {
+                    return Err(format!("Unknown flag '{}'.", other));
+                }
             }
             other => positional.push(other.to_string()),
         }
@@ -76,7 +90,7 @@ fn parse_args() -> Result<CliOptions, String> {
 
     if positional.len() != 1 {
         return Err(
-            "Usage: pips-solver [--show-game] [--show-playout] <path-to-game-file>".to_string(),
+            "Usage: solve-polypips [--show-game] [--show-playout] <path-to-game-file>".to_string(),
         );
     }
 
@@ -84,5 +98,17 @@ fn parse_args() -> Result<CliOptions, String> {
         show_game,
         show_playout,
         path: positional.remove(0),
+        solver,
     })
+}
+
+fn parse_solver_flag(value: &str) -> Result<SolverKind, String> {
+    match value.to_ascii_lowercase().as_str() {
+        "legacy" | "v1" => Ok(SolverKind::Legacy),
+        "v2" | "new" => Ok(SolverKind::V2),
+        other => Err(format!(
+            "Unsupported solver '{}'. Expected 'v2' or 'legacy'.",
+            other
+        )),
+    }
 }

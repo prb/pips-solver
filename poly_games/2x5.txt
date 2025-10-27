@@ -1,0 +1,9 @@
+board:
+#####
+#####
+
+pieces:
+5I:01234,5I:55666
+
+constraints:
+

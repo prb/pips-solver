@@ -18,6 +18,7 @@ The project provides three executables:
 - `pips-solver <path-to-game-file>` which accepts a file path containing a textual puzzle description, solves it, and prints the placements along with a rendered board.
 - `solve-pips <YYYY-MM-DD> <easy|medium|hard|all>` which fetches the NYTimes puzzle for the specified date, solves one or more difficulties, and prints placements plus a rendered board for each requested difficulty.
 - `count-solutions <YYYY-MM-DD> <easy|medium|hard|all>` which fetches the NYTimes puzzle for the specified date and reports how many solutions exist for the requested difficulty (or all difficulties).
+- `generate-poly [--width=N] [--height=N] [--shapes=2,3,4,5] [--seed=VALUE]` which synthesises a tiling using the requested mix of polyominoes and emits a textual puzzle stub (board + piece inventory) for experimentation.
 
 The data model, game loader, and solver should all be in separate submodules.  For the data model, each struct should be defined in its own module.
 
@@ -30,12 +31,11 @@ The `solve-pips` and `count-solutions` binaries augment the solver by pulling pu
 - The difficulty argument accepts `easy`, `medium`, `hard`, or `all`. When `all` is specified, the solver iterates in the order Easy, Medium, Hard, printing a banner before each run.
 - Puzzle data is fetched from `https://www.nytimes.com/svc/pips/v1/<YYYY-MM-DD>.json` by default. If the `NYT_PIPS_JSON_DIR` environment variable is set, the CLIs read `game-<date>.json` from that directory instead. The `NYT_PIPS_BASE_URL` variable provides an alternate base URL or filesystem path when needed (tests, mirroring, etc.).
 - Fetch, parse, and load errors produce descriptive user-facing messages and terminate the command.
-- Both `pips-solver` and `solve-pips` accept `--show-game` to include the unsolved board plus domino inventory and `--show-playout` to display the numbered placement list; when omitted, the commands print only the solve banner, timing, and solved board.
-- For each solved difficulty, `solve-pips` prints the constraint board in its stylized ASCII-art form, lists the domino inventory, enumerates the placements, and then renders the solved board with the placed digits when the corresponding flags are supplied.
+- When invoked with `--show-game`, `solve-pips` prints the constraint board in its stylized ASCII-art form and enumerates the available pieces before solving. Supplying `--show-playout` adds the placement list; omitting both flags yields the terse banner + solved board output.
 - `count-solutions` prints a summary banner and the total number of solutions for each requested difficulty using a single-threaded exhaustive search.
 
 ## Output Formatting
-Both `pips-solver` and `solve-pips` render boards using Unicode box-drawing characters. The unsolved view displays constraint targets or symbols (`=`, `≠`, `<N`, `>N`, numeric totals, etc.) inline with the grid; additional cells belonging to the same constraint are marked with `*`. Gaps in the board layout retain their negative space so the outline matches the original puzzle silhouette. After solving, the board is re-rendered with the assigned pip values in each active cell. The CLI output also includes a neatly columnated `Dominoes:` section so players can review the available pieces alongside the board.
+Both `pips-solver` and `solve-pips` render boards using Unicode box-drawing characters. The unsolved view displays constraint targets or symbols (`=`, `≠`, `<N`, `>N`, numeric totals, etc.) inline with the grid; additional cells belonging to the same constraint are marked with `*`. Gaps in the board layout retain their negative space so the outline matches the original puzzle silhouette. After solving, the board is re-rendered with the assigned pip values in each active cell. When requested, the CLI output also includes a neatly columnated `Pieces:` section so players can review the available inventory alongside the board.
 
 # Data Model
 The fundamental idea for the data model is to treat the board as a two-dimensional grid with non-negative integer coordinates.
@@ -45,18 +45,18 @@ A _pips_ is a non-negative integer in the range `[0..6]` that represents the num
 
 The `Pips` type should not allow the assignment of integers outside of the prescribed range.  Equality, hashing and ordering for `Pips` are inherited from the contained integer.
 
-## Pieces / Dominoes
-A _piece_ is an ordered pair of `Pips` that represents a domino.  For the purpose of comparison, two pieces are the same if they contain the same two `Pips`.  For simplicity and because there is no risk of confusion, we will occasionally write the pieces simply as a side by side integers, e.g., `12` represents the piece `(1,2)`.
+## Pieces / Polyominoes
+A _piece_ is a polyomino containing between two and five cells. Supported shapes currently include the classic domino (two cells) and straight triominoes, tetrominoes, and pentominoes. Each cell carries a `Pips` value drawn from `[0,6]`. For the purpose of comparison and hashing, pieces are treated as `(shape, multiset-of-pips)` pairs; the canonical representation sorts the pip values, but individual placements may permute those values among the cells when exploring the search space.
 
-To avoid confusion, we implement the Piece type by always storing the Pips in non-descending order.  For example, the piece `12` is stored as `(1,2)` and the piece `21` is stored as `(1,2)`; there is no ambiguity in storing `11` as `(1,1)`. This is intended to avoid difficulties with managing membership in collections.
+A piece whose pip multiset contains a single value (e.g., `[3,3,3]`) is the natural generalisation of the domino “doubleton”.
 
-A piece with the same pips for each of its positions is called a _doubleton_.  For example, `00`, `11`, `22`, `33`, `44`, `55`, and `66` are all doubletons.
-
-We define a convenience function `removeOne` that accepts a `Vec<Piece>` and a piece and returns a `Result<Vec<Piece>,Err>` new list that removes a single occurrence of the piece from the list or an error if the piece is not found.  For example:
+We define a convenience function `removeOne` that accepts a `Vec<Piece>` and a piece and returns a `Result<Vec<Piece>,Err>`: a new list that removes a single occurrence of the piece from the list or an error if the piece is not found.  For example:
 ```
-removeOne([Piece(1,2),Piece(1,2)], Piece(1,2)) = Ok([Piece(1,2)])
-removeOne([Piece(3,4),Piece(5,6)], Piece(1,2)) = Err("(1,2) was not present in the list of pieces.")
+removeOne([Domino[1,2], Domino[1,2], Triomino[0,1,2]], Domino[1,2]) = Ok([Domino[1,2], Triomino[0,1,2]])
+removeOne([Tetromino[3,3,4,4]], Domino[1,2]) = Err("Piece Domino [1, 2] was not present in the list of pieces.")
 ```
+
+When searching for solutions, every orientation of a shape is considered together with every unique permutation of its pip values.
 
 ## Points
 A _point_ is an ordered pair of non-negative integers that represents a location on the grid.  Geometrically, the coordinate grid is imagined with increasing, zero-based x-coordinates moving left-to-right and increasing, zero-based y-coordinates moving top-to-bottom.  For example, `(0,0)` is the top-left corner of the grid, `(1,0)` is the point immediately to the right of `(0,0)`, and `(0,1)` is the point immediately below `(0,0)`.
