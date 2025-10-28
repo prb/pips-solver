@@ -4,7 +4,7 @@ Last updated 2025-10-27.
 This project contains three subprojects:
 
 - The *Pips Solver* is a human-specified solver for the NY Times Pips game with implementations coded by [Gemini Pro 2.5](https://deepmind.google/models/gemini/pro/), [Claude Sonnet 4.5 Code](https://www.claude.com/product/claude-code), and [OpenAI Codex 5](https://chatgpt.com/features/codex).
-- The *8x8-2x2 Mechanical Proof* is an human-specified, AI-implemented mechanical proof of an assertion from [Polyominoes 101 - The Absolute Basics](https://www.polyominoes.com/101-the-absolute-basics/) that an 8x8 grid with a 2x2 square removed can be tiled with the 12 pentominoes (up to chirality).  This work was done by Claude Code.
+- The *8x8-2x2 Mechanical Proof* is a human-specified, AI-implemented mechanical proof of an assertion from [Polyominoes 101 - The Absolute Basics](https://www.polyominoes.com/101-the-absolute-basics/) that an 8x8 grid with a 2x2 square removed can be tiled with the 12 pentominoes (up to chirality).  This work was done by Claude Code.
 - The *Polypips Game Concept* extends the concept of the Pips game to polyominoes, introduces a game generator that accepts various heuristics, and a solver.  This work was done by Codex 5.
 
 These is more discussion about each of the subprojects in the sections below.
