@@ -1,9 +1,16 @@
-# Pips Solver
-Last updated 2025-10-23.
+# Pips Solver, 8x8-2x2 Mechanical Proof, and Poly Pips Game Concept
+Last updated 2025-10-27.
 
-This project is a human-specified solver for the NY Times Pips game with implementations coded by [Gemini Pro 2.5](https://deepmind.google/models/gemini/pro/), [Claude Sonnet 4.5 Code](https://www.claude.com/product/claude-code), and [OpenAI Codex 5](https://chatgpt.com/features/codex).  You can scroll to the bottom of this page to see the output of the solver.
+This project contains three subprojects:
 
-The specification is in [strategy.md](strategy.md), and my primary objective was to experiment with different AI models/agents and what it's like to work with them (and to have them work with each other).  I used the [Zed](https://zed.dev) editor for authoring, with a draft of the specification being written independently first and then iteratively improved through the initial work of implementing it via Gemini.
+- The *Pips Solver* is a human-specified solver for the NY Times Pips game with implementations coded by [Gemini Pro 2.5](https://deepmind.google/models/gemini/pro/), [Claude Sonnet 4.5 Code](https://www.claude.com/product/claude-code), and [OpenAI Codex 5](https://chatgpt.com/features/codex).
+- The *8x8-2x2 Mechanical Proof* is an human-specified, AI-implemented mechanical proof of an assertion from [Polyominoes 101 - The Absolute Basics](https://www.polyominoes.com/101-the-absolute-basics/) that an 8x8 grid with a 2x2 square removed can be tiled with the 12 pentominoes (up to chirality).  This work was done by Claude Code.
+- The *Polypips Game Concept* extends the concept of the Pips game to polyominoes, introduces a game generator that accepts various heuristics, and a solver.  This work was done by Codex 5.
+
+These is more discussion about each of the subprojects in the sections below.
+
+## Pips Solver Discussion
+The specification is in [pips-solution-strategy.md](pips-solution-strategy.md), and my primary objective was to experiment with different AI models/agents and what it's like to work with them (and to have them work with each other).  I used the [Zed](https://zed.dev) editor for authoring, with a draft of the specification being written independently first and then iteratively improved through the initial work of implementing it via Gemini.
 
 I worked through four stages:
 
@@ -29,24 +36,24 @@ The puzzles with the most solutions are:
 - 2025-09-04 hard: 86 solutions
 - 2025-08-23 hard: 80 solutions
 
-## Notes on Agents
+### Notes on Agents
 
 These notes are primarily for the initial implementation and a couple of subsequent optimization/refinement passes.
 
-### Gemini 2.5 Pro
+#### Gemini 2.5 Pro
 I used Gemini 2.5 Pro to make a first pass from within the Zed editor, interacting with the AI to build a working solver; net net, it was certainly faster than writing it on my own.  After making passes with Claude and Codex, I used Gemini 2.5 Pro again (but from the CLI this time) for a second pass after the refinements to the specification obtained through the interaction with the other models.
 
 For the first pass, Gemini didn't do a great job following the instructions in the specification, and it was aboslutely the most "YOLO" in terms of writing tests and explaining its thinking.
 
-### Claude Sonnet 4.5 + Code
+#### Claude Sonnet 4.5 + Code
 I used Claude Sonnet 4.5 via the Claude Code CLI (at the cost of around 8% of a week's usage limit for a Pro plan), and it did a superlative job.  It found both subtle and unsubtle issues in the specification, and it produced well-tested code in the format and style that I requested.
 
 Interestingly, the solver was 4-5x as fast as the Gemini solver once it identified (and implemented) a performance optimization by reading the Gemini code.
 
-### Codex 5
+#### Codex 5
 I used GPT Codex 5 (at the cost of around 500k total tokens) for another pass, and it also did a great job, including finding some subtle and unsubtle issues with the specification that both Claude and Gemini had missed.  Interestingly, when I asked it to critique the other two implementations, it complained that they correctly implemented the specification in a way that Codex had missed!  (Codex admitted the error once prompted.)  Codex produced well-tested code in the format and style that I requested.  The Codex solver is about twice as fast as the Gemini solver (and thus half as fast as the Claude solver).
 
-### Initial Wrap Up
+#### Initial Wrap Up
 I asked each of the models to compare/contrast the code from all three models after the initial round, and Claude did a decent job of summarizing:
 
 > Summary
@@ -59,18 +66,15 @@ None of the models did some of the things that I would have expected them to do 
 
 Both of those improvements (especially the code/implementation style one) are good candidates to fold back into an improved specification.
 
-## Cost Considerations
+### Cost Considerations
 On my first pass using Gemini from Zed, I provisioned an API key in Google Cloud, assigned it to the non-free tier, and that resulted in a cost of around $35 for the work.  That's great compared to the cost of human labor, but it's nearly double the monthly $20 subscription costs for either Claude or Codex.  For the second pass using Gemini from the commandline, I authenticated to Google and used the Gemini subscription from my Google account.
 
-## Acknowledgments / References
+### Acknowledgments / References
 Discovering and reviewing the code for another Pips solving project, [pips](https://github.com/ematth/pips), I discovered that a JSON representation of the games is downloadable from the NY Times API; this helped to bulk up the set of examples.  The 2025-09-15 "hard" game is the most interesting because of the large `Exactly` constraint.
 
 There's a [cool approach](https://www.righto.com/2025/10/solve-nyt-pips-with-constraints.html) using a constraint solver from Ken Shirriff, too, and this [F# implementation](https://github.com/brianberns/Pips) that has a slick output style.
 
-## Future
-Things that I might tinker with further could include parallelization with Rayon or similar, trying out AlgorithmX/Dancing Links, prettier output, and accepting a screenshot of a game as input.
-
-## Examples
+### Examples
 To experiment with the solvers, there are a number of examples (in [examples/](examples)) pulled from the NYTimes, or the Codex solver is updated to pull the games from the NYTimes by date and difficulty:
 
 ```
@@ -144,4 +148,83 @@ Found a solution in 8.206167ms
     └───┘           └───────┘
 ```
 
-(Building with the `--release` flag is critical for larger puzzles.)
+(Be sure to build with the `--release` flag is critical for larger puzzles.)
+
+## 8x8-2x2 Mechanical Proof Discussion
+
+The spec [8x8-2x2-mechanical-proof.md](8x8-2x2-mechanical-proof.md) reduces the 49 possible cases to 7 up to symmetry and then uses a backtracking solver to find a tiling that meets the requirements of the problem.  This work was given to Claude, along with some successive enhancements to produce pretty, colorized output.
+
+<img src="images/8x8-2x2-mechanical-proof.png" alt="8x8-2x2 Mechanical Proof" width="400">
+
+## Polypips Game Concept Discussion
+
+The spec [poly-pips.md](poly-pips.md) lays out the concept and rules, so I'll just drop some eye candy here in the form of a generated game and a solver run to solve it.
+
+```
+board:
+ ######
+########
+########
+########
+########
+########
+########
+ ######
+
+pieces: 12x5
+constraints: any
+constraint-coverage: 0.30
+constraint-selection: uniform-size
+seed: 12345
+```
+
+Which produces (with a little editing for brevity):
+
+```
+game:
+    ┌───────────┬───────────┐
+    │ ∅         │>9         │
+┌───┘           └───────────┼───┐
+│                           │=2 │
+│       ┌───────┐           └───┤
+│       │<25    │               │
+├───────┘   ┌───┘               │
+│           │                   │
+├───┬───────┼───┐       ┌───┐   │
+│=1 │ ∅     │ 9 │       │>1 │   │
+│   └───────┤   └───┐   └───┘   │
+│           │       │           │
+│   ┌───────┼───┐   │           │
+│   │       │ 4 │   │           │
+└───┤       └───┴───┘       ┌───┘
+    │                       │
+    └───────────────────────┘
+
+pieces:
+5F-:40461,5V:02341,5W:12143,5P-:50530,5N-:13112,5Y+:32346,
+5Z+:11332,5L-:20245,5U:42111,5T:42402,5X:11230,5I:22664
+```
+
+And the solution:
+
+```
+Found a solution in 4.896125ms
+
+    ┌───┬───────────┬───────┐
+    │ 1 │ 1   4   3 │ 3   4 │
+┌───┤   └───────┐   ├───┐   └───┐
+│ 0 │ 6   4   0 │ 2 │ 1 │ 1   2 │
+│   └───┐   ┌───┤   │   └───┐   │
+│ 5   3 │ 4 │ 3 │ 0 │ 3   1 │ 1 │
+│       ├───┘   ├───┴───┐   ├───┤
+│ 5   0 │ 6   2 │ 1   1 │ 1 │ 2 │
+├───────┴───┐   ├───┐   │   │   │
+│ 1   2   4 │ 3 │ 2 │ 3 │ 2 │ 0 │
+│   ┌───┐   │   │   │   └───┤   │
+│ 1 │ 1 │ 1 │ 4 │ 0 │ 3   2 │ 2 │
+├───┘   └───┼───┘   └───┬───┘   │
+│ 1   2   3 │ 4   2   4 │ 5   4 │
+└───┐   ┌───┴───────────┴───┬───┘
+    │ 0 │ 2   2   6   6   4 │
+    └───┴───────────────────┘
+```

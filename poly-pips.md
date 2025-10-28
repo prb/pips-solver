@@ -1,5 +1,5 @@
 # Polypips Generator / Solver
-This document describes a new game called "Polypips" that is a portmanteau of "polyomino" and "pip".  The idea is to extend the concepts of the Pips game to [polyominoes](https://en.wikipedia.org/wiki/Polyomino).  ([Polyominoes 101](https://polyominoes.co.uk/polyominoes/101/index.html#3) also provides a good introduction and inspired the generation of the 8x8-N puzzle generator, for example.)
+This document describes a new game called "Polypips" that is a portmanteau of "polyomino" and "pip".  The idea is to extend the concepts of the [Pips](https://www.nytimes.com/games/pips) game using [polyominoes](https://en.wikipedia.org/wiki/Polyomino) as pieces.  ([Polyominoes 101](https://polyominoes.co.uk/polyominoes/101/index.html#3) also provides a good introduction.)
 
 This document builds on the approach from the Pips solver described in [pips-solution-strategy.md](pips-solution-strategy.md).
 
@@ -17,15 +17,36 @@ Example invocations:
 % draw_polypips 5Z-:12345
     ┌───────┐
     │ 2   1 │
-┌───┘   ┌───┘
-│ 4   3 │
-│   ┌───┘
-│ 5 │
-└───┘
+    │   ┌───┘
+    │ 3 │
+┌───┘   │
+│ 5   4 │
+└───────┘
 % draw_polypips --compact 5Z-:12345
  21
-43
-5
+ 3
+54
+```
+
+The `draw_polypips` tool should also accept a rotation flag (assumed to be zero if omitted) and multiple polyominoes, e.g.:
+
+```
+% draw_polypips 5W:01266 5W:01266:90
+┌───┐
+│ 0 │
+│   └───┐
+│ 1   2 │
+└───┐   └───┐
+    │ 6   6 │
+    └───────┘
+
+        ┌───┐
+        │ 6 │
+    ┌───┘   │
+    │ 2   6 │
+┌───┘   ┌───┘
+│ 0   1 │
+└───────┘
 ```
 
 ### Puzzle Solving
@@ -33,7 +54,7 @@ Example invocations:
 
 ## Polyomino Notation
 
-Note that for our purposes, we imagine the polyominoes being like physical dominoes with the pieces being marked on one face with pips and blank on the other.  Placing the pieces allows for 0-90-180-270 degree rotations but not reflections, and with this in mind, we distinguish chirality (i.e., left- and right-handed) for polyominoes.
+For our purposes, we imagine the polyominoes being like physical dominoes with the pieces being marked on one face with pips and blank on the other.  Placing the pieces allows for 0-90-180-270 degree rotations but not reflections, and with this in mind, we distinguish chirality (i.e., left- and right-handed) for polyominoes.
 
 ### Input
 We use the following brief input notation for polyominoes with pips as labels on the squares.  The notation is of the form
@@ -270,13 +291,11 @@ The input for game generation is as follows:
 2. A description of the allowed piece polyominoes and rules for placement.
 3. A description of the allowed constraint polyominoes and rules for placement.
 
-
-
 These are discussed in more detail below.
 
 #### Board Shape
 
-We support board shape input in the same style as the Pips solver with `#` marks to show which points are part of the board.  For example, an `8x8` board with a `2x2` square hold in the middle would be:
+We support board shape input in the same style as the Pips solver with `#` marks to show which points are part of the board.  For example, an `8x8` board with a `2x2` square hole in the middle would be:
 
 ```
 ########
