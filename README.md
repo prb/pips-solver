@@ -1,11 +1,11 @@
 # Pips Solver, 8x8-2x2 Mechanical Proof, and Poly Pips Game Concept
 Last updated 2025-10-27.
 
-This project contains three subprojects:
+This project contains three subprojects that are an initial foray into [vibe coding](https://www.technologyreview.com/2025/04/16/1115135/what-is-vibe-coding-exactly/) for me:
 
 - The *Pips Solver* is a human-specified solver for the NY Times Pips game with implementations coded by [Gemini Pro 2.5](https://deepmind.google/models/gemini/pro/), [Claude Sonnet 4.5 Code](https://www.claude.com/product/claude-code), and [OpenAI Codex 5](https://chatgpt.com/features/codex).
-- The *8x8-2x2 Mechanical Proof* is a human-specified, human-guided, AI-implemented mechanical proof of an assertion from [Polyominoes 101 - The Absolute Basics](https://www.polyominoes.com/101-the-absolute-basics/) that an 8x8 grid with a 2x2 square removed can be tiled with the 12 pentominoes (up to chirality).  This work was done by Claude Code.
-- The *Polypips Game Concept* extends the concept of the Pips game to polyominoes, introduces a game generator that accepts various heuristics, and a solver.  As with the other work here, this was human-specified, human guided, and AI implemented.  This work was done by Codex 5.
+- The *8x8-2x2 Mechanical Proof* is a human-specified, human-guided, AI-implemented mechanical proof of an assertion from [Polyominoes 101 - The Absolute Basics](https://www.polyominoes.com/101-the-absolute-basics/) that an 8x8 grid with a 2x2 square removed can be tiled with the 12 pentominoes (up to chirality).  Rather than a three-way bakeoff, this work was done by Claude Code, and I gave it the opportunity to read through the code for the then in-progress Polypips project.
+- The *Polypips Game Concept* extends the concept of the Pips game to polyominoes, introduces a game generator that accepts various heuristics, and a solver.  As with the other work here, this was human-specified, human guided, and AI implemented.  Rather than a three-way bakeoff, this work was done by Codex 5.
 
 These is more discussion about each of the subprojects in the sections below.
 
@@ -67,7 +67,7 @@ None of the models did some of the things that I would have expected them to do 
 Both of those improvements (especially the code/implementation style one) are good candidates to fold back into an improved specification.
 
 ### Cost Considerations
-On my first pass using Gemini from Zed, I provisioned an API key in Google Cloud, assigned it to the non-free tier, and that resulted in a cost of around $35 for the work.  That's great compared to the cost of human labor, but it's nearly double the monthly $20 subscription costs for either Claude or Codex.  For the second pass using Gemini from the commandline, I authenticated to Google and used the Gemini subscription from my Google account.
+On my first pass using Gemini from Zed, I provisioned an API key in Google Cloud, assigned it to the non-free tier, and that resulted in a cost of around $35 for the work.  That's great compared to the cost of human labor, but it's nearly double the monthly $20 subscription costs for either Claude or Codex.  For the second pass using Gemini from the commandline, I authenticated to Google and used the Gemini subscription from my Google account.  That has had mixed results in terms of usability, as I also use Gemini for day-to-day AI assistance, so I've bumped into rate limits more frequently than with the other models.
 
 ### Acknowledgments / References
 Discovering and reviewing the code for another Pips solving project, [pips](https://github.com/ematth/pips), I discovered that a JSON representation of the games is downloadable from the NY Times API; this helped to bulk up the set of examples.  The 2025-09-15 "hard" game is the most interesting because of the large `Exactly` constraint.
@@ -156,6 +156,9 @@ The spec [8x8-2x2-mechanical-proof.md](8x8-2x2-mechanical-proof.md) reduces the 
 
 <img src="images/8x8-2x2-mechanical-proof.png" alt="8x8-2x2 Mechanical Proof" width="400">
 
+### Reflections
+
+
 ## Polypips Game Concept Discussion
 
 The spec [poly-pips.md](poly-pips.md) lays out the concept and rules, so I'll just drop some eye candy here in the form of a generated game and a solver run to solve it.
@@ -228,3 +231,6 @@ Found a solution in 4.896125ms
     │ 0 │ 2   2   6   6   4 │
     └───┴───────────────────┘
 ```
+
+### Reflections
+This one took twice as long as it should due to some confusion over the dynamics of the puzzle pieces.  I intended — as one mindful of the physical rigidity of a real-world shape — that the assignments of pips to pieces was rigid, but Codex got the idea that it was allowed to permute the pips within the piece, which ballooned the search space.  This also casused subtle bug in the first (apparently working) version of the generation code that produced some unsolvable puzzles with the pieces as notated.  With the solver taking an unreasonably long time (tens of minutes) to not complete a puzzle where the combination of the geometry of the pieces and the arithmetic constraints should have resulted in a small search space, I had Codex go back to the drawing board ("v2 solver", if references remain in the code) with more emphasis on ensuring that the piece notation and other fundamental aspects of the project met my expectations.
