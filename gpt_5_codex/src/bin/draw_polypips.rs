@@ -1,6 +1,6 @@
 use pips_solver::display;
 use pips_solver::model::{Board, Game, Piece, Pips, Placement, Point, PolyShape};
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::env;
 use std::process;
 
@@ -149,28 +149,40 @@ fn render_piece(parsed: &ParsedPiece, compact: bool) -> Result<Vec<String>, Stri
         *y -= min_y;
     }
 
-    let rotated_offsets: Vec<(i32, i32)> = rotated_cells.iter().map(|(x, y, _)| (*x, *y)).collect();
+    let rotated_map: HashMap<(i32, i32), Pips> = rotated_cells
+        .iter()
+        .map(|(x, y, pip)| ((*x, *y), *pip))
+        .collect();
 
+    let mut rotated_keys: Vec<(i32, i32)> = rotated_map.keys().copied().collect();
+    rotated_keys.sort();
     let orientation_index = parsed
         .piece
         .orientations()
         .iter()
-        .position(|orientation| orientation == &rotated_offsets)
-        .unwrap_or(
-            parsed
-                .piece
-                .orientation_index_for_angle(parsed.rotation_angle),
-        );
+        .position(|orientation| {
+            let mut candidate = orientation.clone();
+            candidate.sort();
+            candidate == rotated_keys
+        })
+        .ok_or_else(|| {
+            format!(
+                "Rotation {}° does not match any orientation for {}.",
+                parsed.rotation_angle,
+                parsed.piece.shape().code()
+            )
+        })?;
 
     let orientation_offsets = parsed.piece.orientations()[orientation_index].clone();
-    let mut pip_order = Vec::with_capacity(rotated_cells.len());
+    let mut pip_order = Vec::with_capacity(orientation_offsets.len());
     for (ox, oy) in orientation_offsets.iter() {
-        if let Some((_, _, pip)) = rotated_cells
-            .iter()
-            .find(|(rx, ry, _)| rx == ox && ry == oy)
-        {
-            pip_order.push(*pip);
-        }
+        let pip = rotated_map.get(&(*ox, *oy)).ok_or_else(|| {
+            format!(
+                "Unable to map pip for offset ({}, {}) in orientation {}.",
+                ox, oy, orientation_index
+            )
+        })?;
+        pip_order.push(*pip);
     }
 
     let placement = Placement::new(
