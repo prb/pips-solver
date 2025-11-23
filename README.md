@@ -70,9 +70,9 @@ Both of those improvements (especially the code/implementation style one) are go
 On my first pass using Gemini from Zed, I provisioned an API key in Google Cloud, assigned it to the non-free tier, and that resulted in a cost of around $35 for the work.  That's great compared to the cost of human labor, but it's nearly double the monthly $20 subscription costs for either Claude or Codex.  For the second pass using Gemini from the commandline, I authenticated to Google and used the Gemini subscription from my Google account.  That has had mixed results in terms of usability, as I also use Gemini for day-to-day AI assistance, so I've bumped into rate limits more frequently than with the other models.
 
 ### Acknowledgments / References
-Discovering and reviewing the code for another Pips solving project, [pips](https://github.com/ematth/pips), I discovered that a JSON representation of the games is downloadable from the NY Times API; this helped to bulk up the set of examples.  The 2025-09-15 "hard" game is the most interesting because of the large `Exactly` constraint.
+Reviewing the code for another Pips solving project, [pips](https://github.com/ematth/pips), I discovered that a JSON representation of the games is downloadable from the NY Times API; this helped to bulk up the set of examples.  The 2025-09-15 "hard" game is the most interesting because of the large `Exactly` constraint.
 
-There's a [cool approach](https://www.righto.com/2025/10/solve-nyt-pips-with-constraints.html) using a constraint solver from Ken Shirriff, too, and this [F# implementation](https://github.com/brianberns/Pips) that has a slick output style.
+There's a [cool approach](https://www.righto.com/2025/10/solve-nyt-pips-with-constraints.html) using a constraint solver from Ken Shirriff, too, and this [F# implementation](https://github.com/brianberns/Pips) that has a slick output style.  In terms of maximum eye candy, Andrew Healey's [solver](https://healeycodes.com/solving-nyt-pips-puzzle) has a cool graphical animation of the board and the search tree.
 
 ### Examples
 To experiment with the solvers, there are a number of examples (in [examples/](examples)) pulled from the NYTimes, or the Codex solver is updated to pull the games from the NYTimes by date and difficulty:
